@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.App", "..\..\..\.NET Apps\FIFA18AutoBuyer\Fifa18AutoBuyer\Fifa18AutoBuyer.App\AutoBuyer.App.csproj", "{47C0395B-E776-4443-9A2B-5FE611EBEA8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.App", "AutoBuyer.App\AutoBuyer.App.csproj", "{EF5CE90C-3A67-4946-B632-769F0187B974}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Core", "..\..\..\.NET Apps\FIFA18AutoBuyer\Fifa18AutoBuyer\Fifa18AutoBuyer.Core\AutoBuyer.Core.csproj", "{E33C96CE-00A6-49D2-9ECF-2761724596E7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Tests", "..\..\..\.NET Apps\FIFA18AutoBuyer\Fifa18AutoBuyer\Fifa18AutoBuyer.Tests\AutoBuyer.Tests.csproj", "{DA27D7F1-9366-42BD-BC31-F3B5327954C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Core", "AutoBuyer.Core\AutoBuyer.Core.csproj", "{030A34AD-D913-4A71-8E50-8E54A111741A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{47C0395B-E776-4443-9A2B-5FE611EBEA8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47C0395B-E776-4443-9A2B-5FE611EBEA8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47C0395B-E776-4443-9A2B-5FE611EBEA8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47C0395B-E776-4443-9A2B-5FE611EBEA8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E33C96CE-00A6-49D2-9ECF-2761724596E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E33C96CE-00A6-49D2-9ECF-2761724596E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E33C96CE-00A6-49D2-9ECF-2761724596E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E33C96CE-00A6-49D2-9ECF-2761724596E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA27D7F1-9366-42BD-BC31-F3B5327954C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA27D7F1-9366-42BD-BC31-F3B5327954C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA27D7F1-9366-42BD-BC31-F3B5327954C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA27D7F1-9366-42BD-BC31-F3B5327954C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF5CE90C-3A67-4946-B632-769F0187B974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF5CE90C-3A67-4946-B632-769F0187B974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF5CE90C-3A67-4946-B632-769F0187B974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5CE90C-3A67-4946-B632-769F0187B974}.Release|Any CPU.Build.0 = Release|Any CPU
+		{030A34AD-D913-4A71-8E50-8E54A111741A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{030A34AD-D913-4A71-8E50-8E54A111741A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{030A34AD-D913-4A71-8E50-8E54A111741A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{030A34AD-D913-4A71-8E50-8E54A111741A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

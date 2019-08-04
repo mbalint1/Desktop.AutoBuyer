@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="PlayerSelectView">
     <Window.Background>
-        <ImageBrush ImageSource="Resources/fiber1.png"></ImageBrush>
+        <ImageBrush ImageSource="../Resources/fiber1.png"></ImageBrush>
     </Window.Background>
     <Grid>
         <Grid VerticalAlignment="Top">

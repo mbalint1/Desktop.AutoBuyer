@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Calibrator" Height="300" Width="300" KeyDown="Window_KeyDown">
     <Window.Background>
-        <ImageBrush ImageSource="Resources/fiber1.png"></ImageBrush>
+        <ImageBrush ImageSource="../Resources/fiber1.png"></ImageBrush>
     </Window.Background>
     <Grid>
         <Grid.RowDefinitions>
