@@ -7,3 +7,9 @@
 /AutoBuyer/AutoBuyer.App/obj/Debug
 /AutoBuyer/AutoBuyer.Core/obj/Debug
 /AutoBuyer/AutoBuyer.Core/bin/Debug
+/AutoBuyer/AutoBuyer.Tests/obj
+/AutoBuyer/AutoBuyer.Tests/bin
+/AutoBuyer/AutoBuyer.Core/obj/Release
+/AutoBuyer/AutoBuyer.Core/bin/Release
+/AutoBuyer/AutoBuyer.App/obj/Release
+/AutoBuyer/AutoBuyer.App/bin/Release
