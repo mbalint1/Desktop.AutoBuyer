@@ -75,7 +75,9 @@
     <Compile Include="Utilities\ImageManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Log4Net.config" />
+    <None Include="Log4Net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

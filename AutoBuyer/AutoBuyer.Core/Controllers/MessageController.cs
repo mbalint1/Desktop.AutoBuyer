@@ -23,7 +23,7 @@ namespace AutoBuyer.Core.Controllers
                 var client = new SmtpClient("smtp.gmail.com", 587)
                 {
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(stuffs[1], stuffs[2]),
+                    Credentials = new NetworkCredential(stuffs[1], stuffs[0]),
                     EnableSsl = true
                 };
 
