@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer", "AutoBuyer\AutoBuyer.csproj", "{D953C50A-D509-49FD-A244-F3C0EF164AFE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D953C50A-D509-49FD-A244-F3C0EF164AFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D953C50A-D509-49FD-A244-F3C0EF164AFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D953C50A-D509-49FD-A244-F3C0EF164AFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D953C50A-D509-49FD-A244-F3C0EF164AFE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {36622F59-EC2A-4E63-AB55-A13BB5D3DC6F}
+	EndGlobalSection
+EndGlobal
