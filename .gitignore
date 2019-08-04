@@ -3,3 +3,7 @@
 ################################################################################
 
 /AutoBuyer/.vs/AutoBuyer/v16
+/AutoBuyer/AutoBuyer.App/bin/Debug
+/AutoBuyer/AutoBuyer.App/obj/Debug
+/AutoBuyer/AutoBuyer.Core/obj/Debug
+/AutoBuyer/AutoBuyer.Core/bin/Debug
