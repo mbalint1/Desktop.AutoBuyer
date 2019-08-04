@@ -1,0 +1,53 @@
+﻿<Window x:Class="AutoBuyer.App.Views.PlayerSelectView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+        mc:Ignorable="d"
+        Title="PlayerSelectView">
+    <Window.Background>
+        <ImageBrush ImageSource="Resources/fiber1.png"></ImageBrush>
+    </Window.Background>
+    <Grid>
+        <Grid VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Name="lblTitle" HorizontalAlignment="Center" FontFamily="Impact" FontSize="60" FontStyle="Italic" FontWeight="Normal" Foreground="Yellow" Text="FIFA Auto Buyer"></TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" Name="lblPlayerSearch" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow" Text="Search Player to Buy"></TextBlock>
+            <toolkit:AutoCompleteBox Grid.Row="2" Grid.Column="0" Name="txtPlayerToBuy" HorizontalAlignment="Left" Margin="5,0,0,0"  Height="25" Width="200" SelectionChanged="TxtPlayerToBuy_OnSelectionChanged" />
+            <CheckBox Grid.Row="2" Grid.Column="1" Name="chkValidPlayer" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="ChkValidPlayer_OnChecked"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Name="lblMaxPrice" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow" Text="Select Maximum Price"></TextBlock>
+            <ComboBox Grid.Row="4" Grid.Column="0" Name="cboMaxPrice" HorizontalAlignment="Left" Margin="5,0,0,0" Height="25" Width="100" SelectionChanged="CboMaxPrice_OnSelectionChanged"></ComboBox>
+            <CheckBox Grid.Row="4" Grid.Column="1" Name="chkValidPrice" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="ChkValidPrice_OnChecked"/>
+            <TextBlock Grid.Row="5" Grid.Column="0" Name="lblMaxPlayers" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow"></TextBlock>
+            <ComboBox Grid.Row="6" Grid.Column="0" Name="cboMaxPlayers" HorizontalAlignment="Left" Margin="5,0,0,0" Height="25" Width="100" SelectionChanged="CboMaxPlayers_OnSelectionChanged"></ComboBox>
+            <CheckBox Grid.Row="6" Grid.Column="1" Name="chkValidMaxPlayers" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="chkValidMaxPlayers_Checked"/>
+
+            <TextBlock Grid.Row="7" Name="lblAutoResell" Foreground="Yellow" FontSize="16" Text="Auto Resell Mode" />
+            <CheckBox Grid.Row="7" Margin="130,5,0,0" Name="chkAutoSell" Checked="ChkAutoSell_OnChecked" Unchecked="ChkAutoSell_OnUnchecked"></CheckBox>
+            <TextBlock Grid.Row="7" Name="lblMinSell" Margin="180,0,0,0" Foreground="Yellow" FontSize="16" Text="Min Sell Price" />
+            <TextBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="285,0,0,0" Height="25" Width="50" Name="txtMinSell" Visibility="Visible"></TextBox>
+            <TextBlock Grid.Row="7" Name="lblMaxSell" Margin="350,0,0,0" Foreground="Yellow" FontSize="16" Text="Max Sell Price" />
+            <TextBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="460,0,0,0" Height="25" Width="50" Name="txtMaxSell" Visibility="Visible"></TextBox>
+
+            <Button Grid.Row="8" Grid.Column="0" Name="btnStart" HorizontalAlignment="Left" Margin="5,0,0,0" Height="30" Width="150" Content="Start Auto Buyer!" Click="BtnStart_OnClick" Background="DarkSlateGray" Foreground="Yellow"></Button>
+        </Grid>
+        <Grid>
+            <ListBox Name="lstPurchasedPlayers" VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="LightGray"></ListBox>
+        </Grid>
+    </Grid>
+</Window>
