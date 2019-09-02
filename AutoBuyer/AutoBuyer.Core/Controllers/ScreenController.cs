@@ -302,7 +302,7 @@ namespace AutoBuyer.Core.Controllers
 
             messageCapture.Dispose();
 
-            return percentMatch > 90;
+            return percentMatch > 85;
         }
 
         public Screens WhatScreenAmIOn()

@@ -210,9 +210,9 @@ namespace AutoBuyer.Core.Controllers
             var decreasing = false;
             var consumable = (Consumable)SearchObject;
 
-            MouseController.PerformButtonClick(ButtonTypes.IncreaseMinConsumable);
+            CaptchaMonitorTimer.Start();
 
-            //Start at 200, increase to 250, decrease to 200, etc.
+            MouseController.PerformButtonClick(ButtonTypes.IncreaseMinConsumable);
             while (NumberPurchased < consumable.NumberToPurchase)
             {
                 if (CaptchaTime)
@@ -285,6 +285,19 @@ namespace AutoBuyer.Core.Controllers
 
                 MouseController.PerformButtonClick(ButtonTypes.BackButton);
             }
+            CaptchaMonitorTimer.Stop();
+
+            //TODO: Inject these values into this class
+            var stuffs = File.ReadAllText(ConfigurationManager.AppSettings["pFile"]).Trim().Split(',');
+
+            if (stuffs.Length >= 3)
+            {
+                new MessageController().SendEmail(stuffs[1], stuffs[2], "Run Complete", "We done here, yo");
+            }
+            else
+            {
+                //TODO: Move validation for this somewhere else
+            }
         }
 
         #endregion Public Methods
@@ -353,6 +366,15 @@ namespace AutoBuyer.Core.Controllers
         private void CaptchaMonitorTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             var isCaptchaTime = ScreenController.IsCaptchaMessageDisplayed();
+
+            if (isCaptchaTime)
+            {
+                // Double Check
+
+                Thread.Sleep(1000);
+
+                isCaptchaTime = ScreenController.IsCaptchaMessageDisplayed();
+            }
 
             if (isCaptchaTime)
             {
