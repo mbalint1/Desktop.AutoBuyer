@@ -13,3 +13,6 @@
 /AutoBuyer/AutoBuyer.Core/bin/Release
 /AutoBuyer/AutoBuyer.App/obj/Release
 /AutoBuyer/AutoBuyer.App/bin/Release
+/AutoBuyer/AutoBuyer.DbBuilder/bin/Debug
+/AutoBuyer/AutoBuyer.DbBuilder/bin/Release
+/AutoBuyer/AutoBuyer.DbBuilder/obj

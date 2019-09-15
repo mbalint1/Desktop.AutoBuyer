@@ -13,14 +13,19 @@ namespace AutoBuyer.Core.Data
         {
             try
             {
-                var path = ConfigurationManager.AppSettings["DbFilePath"];
-                if (File.Exists(path))
+                var playerNames = new List<string>();
+
+                var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AutoBuyer\\PlayerDB.csv");
+
+                var csvLines = File.ReadAllLines(filePath);
+
+                foreach (var line in csvLines)
                 {
-                    var csv = File.ReadAllText(path);
-                    return csv.Split(',').Distinct().ToList();
+                    var name = line.Split(',').FirstOrDefault();
+                    playerNames.Add(name);
                 }
 
-                return null; //TODO: What here?
+                return playerNames;
             }
             catch (Exception)
             {
