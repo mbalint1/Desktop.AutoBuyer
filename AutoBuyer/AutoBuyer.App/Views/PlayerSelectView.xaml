@@ -28,7 +28,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Name="lblTitle" HorizontalAlignment="Center" FontFamily="Impact" FontSize="60" FontStyle="Italic" FontWeight="Normal" Foreground="Yellow" Text="FIFA Auto Buyer"></TextBlock>
             <TextBlock Grid.Row="1" Grid.Column="0" Name="lblPlayerSearch" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow" Text="Search Player to Buy"></TextBlock>
-            <toolkit:AutoCompleteBox Grid.Row="2" Grid.Column="0" Name="txtPlayerToBuy" HorizontalAlignment="Left" Margin="5,0,0,0"  Height="25" Width="200" SelectionChanged="TxtPlayerToBuy_OnSelectionChanged" />
+            <toolkit:AutoCompleteBox Grid.Row="2" Grid.Column="0" Name="txtPlayerToBuy" HorizontalAlignment="Left" Margin="5,0,0,0"  Height="25" Width="200" ItemFilter="Filter" SelectionChanged="TxtPlayerToBuy_OnSelectionChanged" />
             <CheckBox Grid.Row="2" Grid.Column="1" Name="chkValidPlayer" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="ChkValidPlayer_OnChecked"/>
             <TextBlock Grid.Row="3" Grid.Column="0" Name="lblMaxPrice" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow" Text="Select Maximum Price"></TextBlock>
             <ComboBox Grid.Row="4" Grid.Column="0" Name="cboMaxPrice" HorizontalAlignment="Left" Margin="5,0,0,0" Height="25" Width="100" SelectionChanged="CboMaxPrice_OnSelectionChanged"></ComboBox>

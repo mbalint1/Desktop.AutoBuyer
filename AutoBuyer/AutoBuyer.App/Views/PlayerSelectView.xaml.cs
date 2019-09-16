@@ -250,5 +250,12 @@ namespace AutoBuyer.App.Views
             lblMinSell.Visibility = Visibility.Hidden;
             lblMaxSell.Visibility = Visibility.Hidden;
         }
+
+        private bool Filter(string search, object item)
+        {
+            var playerCandidate = item.ToString().ToLower().Replace(" ", string.Empty);
+
+            return playerCandidate.Contains(search.ToLower());
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace AutoBuyer.Core.Data
                 tempList.Add(m);
             }
 
-            //range 700 - 1,000,000
+            //range 700 - 1,500,000
             return tempList;
         }
 
