@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using AutoBuyer.DbBuilder.DTO;
 
 namespace AutoBuyer.DbBuilder
 {
@@ -37,6 +38,11 @@ namespace AutoBuyer.DbBuilder
                     }
                 }
             }
+        }
+
+        public void SavePlayers(List<Player> players)
+        {
+
         }
     }
 }

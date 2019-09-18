@@ -11,35 +11,9 @@ namespace AutoBuyer.DbBuilder
     {
         static void Main(string[] args)
         {
-            const string rareBaseUrl = "https://www.futwiz.com/en/fifa20/players?minrating=75&maxrating=99&release=rare&page=";
-            const string nonRareBaseUrl = "https://www.futwiz.com/en/fifa20/players?minrating=75&maxrating=99&release=nonrare&page=";
+            var futParser = new FutParsers();
 
-            const int rarePageLimit = 32;
-            const int nonRarePageLimit = 48;
-
-            try
-            {
-                var webUtility = new WebUtilities();
-                var dbUtility = new DbUtilities();
-
-                for (int i = 0; i <= rarePageLimit; i++)
-                {
-                    var pageResults = webUtility.GetRestResponse(rareBaseUrl + i);
-                    var players = webUtility.PageToPlayerCsvList(pageResults);
-                    dbUtility.WritePlayerFile(players);
-                }
-
-                for (int i = 0; i <= nonRarePageLimit; i++)
-                {
-                    var pageResults = webUtility.GetRestResponse(nonRareBaseUrl + i);
-                    var players = webUtility.PageToPlayerCsvList(pageResults);
-                    dbUtility.WritePlayerFile(players);
-                }
-            }
-            catch (Exception ex)
-            {
-                //TODO: Logging
-            }
+            futParser.CreateFutbinDatabase();
         }
     }
 }

@@ -44,6 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbUtilities.cs" />
+    <Compile Include="DTO\Player.cs" />
+    <Compile Include="DTO\PlayerType.cs" />
+    <Compile Include="DTO\PlayerVersion.cs" />
+    <Compile Include="FutParsers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebUtilities.cs" />
