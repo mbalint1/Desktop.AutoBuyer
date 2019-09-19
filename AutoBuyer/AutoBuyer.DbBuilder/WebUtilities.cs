@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using AutoBuyer.DbBuilder.DTO;
 
 namespace AutoBuyer.DbBuilder
@@ -11,6 +12,8 @@ namespace AutoBuyer.DbBuilder
     {
         public string GetRestResponse(string requestUrl)
         {
+            Thread.Sleep(1000);
+
             var request = (HttpWebRequest)WebRequest.Create(requestUrl);
             var content = string.Empty;
             request.Method = "GET";

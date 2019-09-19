@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AutoBuyer.DbBuilder.DTO;
 using Npgsql;
@@ -31,6 +32,7 @@ namespace AutoBuyer.DbBuilder
                             {
                                 cmd.Prepare();
                             }
+
                             player.Versions.First().Id = cmd.ExecuteScalar()?.ToString();
                         }
 
@@ -43,6 +45,7 @@ namespace AutoBuyer.DbBuilder
                             {
                                 cmd.Prepare();
                             }
+
                             player.Id = cmd.ExecuteScalar()?.ToString();
                         }
                     }

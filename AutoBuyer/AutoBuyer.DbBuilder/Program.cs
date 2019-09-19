@@ -12,9 +12,16 @@ namespace AutoBuyer.DbBuilder
     {
         static void Main(string[] args)
         {
-            var futParser = new FutParsers();
+            try
+            {
+                var futParser = new FutParsers();
 
-            futParser.CreateFutbinDatabase();
+                futParser.CreateFutbinDatabase();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }

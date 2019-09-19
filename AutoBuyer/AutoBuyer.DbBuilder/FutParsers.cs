@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutoBuyer.DbBuilder.DTO;
@@ -21,6 +22,8 @@ namespace AutoBuyer.DbBuilder
         public WebUtilities WebUtility { get; }
 
         public DbUtilities DbUtility { get; }
+
+        private Dictionary<string, int> PlayerData { get; set; } = new Dictionary<string, int>();
 
         public FutParsers()
         {
@@ -68,7 +71,10 @@ namespace AutoBuyer.DbBuilder
 
                     var player = PlayerFromFutbinData(rawPlayerData, futbinId, playerType);
 
-                    players.Add(player);
+                    if (player.Versions.Any())
+                    {
+                        players.Add(player);
+                    }
                 }
             }
 
@@ -97,7 +103,7 @@ namespace AutoBuyer.DbBuilder
 
             const string ratingIdentifier = "<div style=\"color:;\" class=\"pcdisplay-rat\">";
             const string positionIdentifier = "<div style=\"color:;\" class=\"pcdisplay-pos\">";
-            const string nameIdentifier = "<title>FIFA 20 Player - ";
+            const string nameIdentifier = "<div class=\"hidden\" id=\"baseurl\" data-url=\"player/";
 
             var lines = rawPlayerData.Split('\n').ToList();
 
@@ -107,7 +113,9 @@ namespace AutoBuyer.DbBuilder
 
                 if (trimmed.StartsWith(ratingIdentifier))
                 {
-                    version.Rating = Convert.ToInt32(trimmed.Substring(ratingIdentifier.Length, 2));
+                    var rating = Convert.ToInt32(trimmed.Substring(ratingIdentifier.Length, 2));
+
+                    version.Rating = rating;
                 }
                 else if (trimmed.StartsWith(positionIdentifier))
                 {
@@ -117,15 +125,23 @@ namespace AutoBuyer.DbBuilder
                 }
                 else if (trimmed.StartsWith(nameIdentifier))
                 {
-                    var length = trimmed.LastIndexOf('|') - nameIdentifier.Length;
+                    var completeIdentifier = $"{nameIdentifier}{futbinId}/";
+                    var length = trimmed.LastIndexOf('"') - completeIdentifier.Length;
 
-                    var rawName = trimmed.Substring(nameIdentifier.Length, length);
+                    var name = trimmed.Substring(completeIdentifier.Length, length).Trim();
 
-                    player.Name = RemoveDiacritics(rawName.Trim());
+                    player.Name = name;
                 }
             }
 
-            player.Versions.Add(version);
+            var ratingTemp = version.Rating;
+            var alreadyExists = PlayerData.TryGetValue(player.Name, out ratingTemp);
+
+            if (!alreadyExists)
+            {
+                PlayerData.Add(player.Name, version.Rating);
+                player.Versions.Add(version);
+            }
 
             return player;
         }
