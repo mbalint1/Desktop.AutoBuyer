@@ -42,7 +42,9 @@ namespace AutoBuyer.DbBuilder
 
         public void SavePlayers(List<Player> players)
         {
+            var dataProvider = new PostgresProvider();
 
+            dataProvider.InsertPlayers(players);
         }
     }
 }

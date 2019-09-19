@@ -121,13 +121,18 @@ namespace AutoBuyer.DbBuilder
 
                     var rawName = trimmed.Substring(nameIdentifier.Length, length);
 
-                    player.Name = rawName.Trim();
+                    player.Name = RemoveDiacritics(rawName.Trim());
                 }
             }
 
             player.Versions.Add(version);
 
             return player;
+        }
+
+        private string RemoveDiacritics(string text)
+        {
+            return System.Text.Encoding.ASCII.GetString(System.Text.Encoding.GetEncoding(1251).GetBytes(text));
         }
 
         #region Unused Futwiz
