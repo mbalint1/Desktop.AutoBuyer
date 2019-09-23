@@ -35,7 +35,14 @@ namespace AutoBuyer.DbBuilder
         {
             try
             {
-                for (int i = 0; i <= FutbinGoldPageLimit; i++)
+                for (int i = 1; i <= FutbinGoldRarePageLimit; i++)
+                {
+                    var pageResults = WebUtility.GetRestResponse(FutbinRareGoldBase + i);
+                    var players = ParseFutbinPage(pageResults, PlayerType.RareGold);
+                    DbUtility.SavePlayers(players);
+                }
+
+                for (int i = 1; i <= FutbinGoldPageLimit; i++)
                 {
                     var pageResults = WebUtility.GetRestResponse(FutbinGoldBase + i);
                     var players = ParseFutbinPage(pageResults, PlayerType.Gold);
@@ -107,21 +114,27 @@ namespace AutoBuyer.DbBuilder
 
             var lines = rawPlayerData.Split('\n').ToList();
 
+            bool hasRating = false;
+            bool hasPosition = false;
+            bool hasName = false;
+
             foreach (var line in lines)
             {
                 var trimmed = line.Trim();
 
-                if (trimmed.StartsWith(ratingIdentifier))
+                if (!hasRating && trimmed.StartsWith(ratingIdentifier))
                 {
                     var rating = Convert.ToInt32(trimmed.Substring(ratingIdentifier.Length, 2));
 
                     version.Rating = rating;
+                    hasRating = true;
                 }
-                else if (trimmed.StartsWith(positionIdentifier))
+                else if (!hasPosition && trimmed.StartsWith(positionIdentifier))
                 {
                     var length = trimmed.LastIndexOf('<') - positionIdentifier.Length;
 
                     version.Position = trimmed.Substring(positionIdentifier.Length, length);
+                    hasPosition = true;
                 }
                 else if (trimmed.StartsWith(nameIdentifier))
                 {
@@ -131,6 +144,13 @@ namespace AutoBuyer.DbBuilder
                     var name = trimmed.Substring(completeIdentifier.Length, length).Trim();
 
                     player.Name = name;
+                    hasName = true;
+                }
+
+                //Doing this because many pages have previous year's info and we don't want those to overwrite
+                if (hasRating && hasPosition && hasName)
+                {
+                    break;
                 }
             }
 
