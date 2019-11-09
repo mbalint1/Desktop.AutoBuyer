@@ -38,6 +38,8 @@ namespace AutoBuyer.Core.Controllers
 
         private Bitmap CaptchaMessageTrainer { get; }
 
+        private Bitmap ServiceUnavailableTrainer { get; }
+
         #endregion Properties
 
         #region Native Code
@@ -77,7 +79,7 @@ namespace AutoBuyer.Core.Controllers
                 SuccessfulPurchaseTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}SuccessfulPurchase.png"));
                 FailedPurchaseTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}FailedPurchase.png"));
                 CaptchaMessageTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}CaptchaMessage.png"));
-
+                ServiceUnavailableTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}ServiceUnavailable.png"));
             }
             catch (Exception ex)
             {
@@ -275,7 +277,7 @@ namespace AutoBuyer.Core.Controllers
 
             results.Dispose();
 
-            return percentMatch >= 70;
+            return percentMatch >= 90;
         }
 
         public bool SuccessfulPurchase()
@@ -298,11 +300,12 @@ namespace AutoBuyer.Core.Controllers
 
             var messageCapture = CaptureCaptchaResults();
 
-            var percentMatch = imageWorker.PercentMatch(messageCapture, CaptchaMessageTrainer);
+            var captcha = imageWorker.PercentMatch(messageCapture, CaptchaMessageTrainer);
+            var serviceUnavailable = imageWorker.PercentMatch(messageCapture, ServiceUnavailableTrainer);
 
             messageCapture.Dispose();
 
-            return percentMatch > 85;
+            return captcha > 85 || serviceUnavailable > 85;
         }
 
         public Screens WhatScreenAmIOn()

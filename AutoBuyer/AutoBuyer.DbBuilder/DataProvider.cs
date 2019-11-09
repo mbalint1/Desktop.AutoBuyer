@@ -1,12 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using AutoBuyer.DbBuilder.DTO;
+using AutoBuyer.Data.DTO;
+using AutoBuyer.Data.Interfaces;
+using AutoBuyer.Data.Postgres;
 
-namespace AutoBuyer.DbBuilder
+namespace AutoBuyer.Data
 {
-    public class DbUtilities
+    public class DataProvider
     {
+        private readonly IDbProvider _dbProvider;
+
+        public DataProvider()
+        {
+            _dbProvider = new PostgresProvider();
+        }
+
+        public void SavePlayers(List<Player> players)
+        {
+            _dbProvider.InsertPlayers(players);
+        }
+
         public void WritePlayerFile(List<string> playerCsvs)
         {
             var directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AutoBuyer");
@@ -40,11 +54,9 @@ namespace AutoBuyer.DbBuilder
             }
         }
 
-        public void SavePlayers(List<Player> players)
+        public void SaveTransactionLogs(List<TransactionLog> logs)
         {
-            var dataProvider = new PostgresProvider();
-
-            dataProvider.InsertPlayers(players);
+            _dbProvider.InsertTransactionLogs(logs);
         }
     }
 }

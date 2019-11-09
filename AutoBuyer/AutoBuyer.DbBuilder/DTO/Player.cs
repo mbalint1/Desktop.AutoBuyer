@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AutoBuyer.DbBuilder.DTO
+namespace AutoBuyer.Data.DTO
 {
     public class Player
     {

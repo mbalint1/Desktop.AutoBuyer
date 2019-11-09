@@ -84,7 +84,7 @@ namespace AutoBuyer.Core.Controllers
                     MouseController.PerformButtonClick(ButtonTypes.PlayerNameTextbox);
                     Thread.Sleep(1500);
                     KeyboardController.SendInput(player.Name);
-                    Thread.Sleep(1500);
+                    Thread.Sleep(2200);
                     MouseController.PerformButtonClick(ButtonTypes.PlayerNameTextDrop);
                     Thread.Sleep(1500);
                     MouseController.PerformButtonClick(ButtonTypes.MaxPriceTxt);
@@ -155,10 +155,15 @@ namespace AutoBuyer.Core.Controllers
 
                 if (succesfulSearch)
                 {
-                    Thread.Sleep(250); // We are too fast for the page
-                    MouseController.PerformButtonClick(ButtonTypes.BuyNow);
-                    Thread.Sleep(200); // We are too fast for the page
-                    MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase);
+                    //Thread.Sleep(150); // We are too fast for the page
+                    //MouseController.PerformButtonClick(ButtonTypes.BuyNow);
+                    //Thread.Sleep(100); // We are too fast for the page
+                    //MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase);
+                    //Thread.Sleep(100); // We are too fast for the page
+                    //MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase);
+                    
+                    DoPurchaseClicking(5, 50);
+
                     Thread.Sleep(5000); // Finalizing purchase
 
                     if (ScreenController.SuccessfulPurchase())
@@ -206,7 +211,7 @@ namespace AutoBuyer.Core.Controllers
 
         public void BuyConsumables()
         {
-            Thread.Sleep(3000);
+            Thread.Sleep(8000);
             var decreasing = false;
             var consumable = (Consumable)SearchObject;
 
@@ -252,10 +257,8 @@ namespace AutoBuyer.Core.Controllers
 
                 if (succesfulSearch)
                 {
-                    Thread.Sleep(250); // We are too fast for the page
-                    MouseController.PerformButtonClick(ButtonTypes.BuyNow);
-                    Thread.Sleep(200); // We are too fast for the page
-                    MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase);
+                    DoPurchaseClicking(5, 50);
+
                     Thread.Sleep(5000); // Finalizing purchase
 
                     if (ScreenController.SuccessfulPurchase())
@@ -303,6 +306,17 @@ namespace AutoBuyer.Core.Controllers
         #endregion Public Methods
 
         #region Private Methods
+
+        private void DoPurchaseClicking(int numAttempts, int msBetweenClicks)
+        {
+            for (int i = 0; i < numAttempts; i++)
+            {
+                Thread.Sleep(msBetweenClicks);
+                MouseController.PerformButtonClick(ButtonTypes.BuyNow);
+                Thread.Sleep(msBetweenClicks);
+                MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase);
+            }
+        }
 
         private void DoTransferSearchNavigation(Screens screen)
         {

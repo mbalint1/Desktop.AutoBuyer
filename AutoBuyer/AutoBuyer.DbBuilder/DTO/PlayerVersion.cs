@@ -1,10 +1,12 @@
 ﻿using System;
 
-namespace AutoBuyer.DbBuilder.DTO
+namespace AutoBuyer.Data.DTO
 {
     public class PlayerVersion
     {
-        public string Id { get; set; }
+        public string VersionId { get; set; }
+
+        public string PlayerId { get; set; }
 
         public string ThirdPartyId { get; set; }
 

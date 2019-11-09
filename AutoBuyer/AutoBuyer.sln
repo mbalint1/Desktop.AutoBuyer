@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Core", "AutoBuyer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Tests", "AutoBuyer.Tests\AutoBuyer.Tests.csproj", "{A0C83C55-E588-4A19-8AD6-4B330589285E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.DbBuilder", "AutoBuyer.DbBuilder\AutoBuyer.DbBuilder.csproj", "{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Data", "AutoBuyer.DbBuilder\AutoBuyer.Data.csproj", "{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

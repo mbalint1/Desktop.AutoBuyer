@@ -52,6 +52,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTests.cs" />
     <Compile Include="LoggingTests.cs" />
     <Compile Include="MessagingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\AutoBuyer.Core\AutoBuyer.Core.csproj">
       <Project>{030a34ad-d913-4a71-8e50-8e54a111741a}</Project>
       <Name>AutoBuyer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AutoBuyer.DbBuilder\AutoBuyer.Data.csproj">
+      <Project>{4fad3526-e954-4be4-bac4-4688a1e2b4e7}</Project>
+      <Name>AutoBuyer.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

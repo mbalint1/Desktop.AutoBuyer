@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading;
-using AutoBuyer.DbBuilder.DTO;
+using AutoBuyer.Data.Interfaces;
 
-namespace AutoBuyer.DbBuilder
+namespace AutoBuyer.Data.Utilities
 {
-    public class WebUtilities
+    public class WebUtilities : IWebUtility
     {
         public string GetRestResponse(string requestUrl)
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(1500);
 
             var request = (HttpWebRequest)WebRequest.Create(requestUrl);
             var content = string.Empty;

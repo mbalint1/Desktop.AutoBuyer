@@ -77,6 +77,7 @@ namespace AutoBuyer.Core.Utilities
 
             return newBitmap;
         }
+
         //public bool IsMatch(Bitmap img1, Bitmap img2, MatchAccuracy accuracy, int totalPixelsInEach = 4096)
         //{
         //    var hash1 = GetHash(img1);
@@ -108,6 +109,40 @@ namespace AutoBuyer.Core.Utilities
             var equalElements = hash1.Zip(hash2, (i, j) => i == j).Count(eq => eq);
 
             return ((decimal)equalElements / (decimal)totalPixelsInEach) * 100;
+        }
+
+        public bool ContainsRed(Bitmap img)
+        {
+            // Pure red = 255,0,0 take the difference between RGB and average. Off red example 200,100,50 average diff of 68. Closer to 0 is closer to pure red.
+
+            const int differenceThreshold = 90;
+            const int numberOfRedPixelsThreshold = 10; // Seems arbitrary but works
+
+            var redPixels = new List<int>();
+
+            using (var bmap = new Bitmap(img, new Size(32, 32)))
+            {
+                for (int j = 0; j < bmap.Height; j++)
+                {
+                    for (int i = 0; i < bmap.Width; i++)
+                    {
+                        var pixel = bmap.GetPixel(i, j);
+                        var r = pixel.R;
+                        var g = pixel.G;
+                        var b = pixel.B;
+
+                        var rDiff = 255 - r;
+                        var avgDiff = (g + b + rDiff) / 3;
+
+                        if (avgDiff <= differenceThreshold)
+                        {
+                            redPixels.Add(avgDiff);
+                        }
+                    }
+                }
+            }
+
+            return redPixels.Count >= numberOfRedPixelsThreshold;
         }
 
         public bool ContainsGreen(Bitmap img)
@@ -162,6 +197,7 @@ namespace AutoBuyer.Core.Utilities
                     }
                 }
                 return lResult;
+
             }
         }
 

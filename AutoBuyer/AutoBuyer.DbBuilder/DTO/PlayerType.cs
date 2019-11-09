@@ -1,4 +1,4 @@
-﻿namespace AutoBuyer.DbBuilder.DTO
+﻿namespace AutoBuyer.Data.DTO
 {
     public enum PlayerType
     {

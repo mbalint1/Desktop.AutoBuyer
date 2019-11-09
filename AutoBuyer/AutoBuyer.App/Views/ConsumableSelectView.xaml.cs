@@ -69,6 +69,10 @@ Enter the Max BIN price you wish to pay (pick an item that is >= 500 coins as th
             var minParse = int.TryParse(txtMinSell.Text, out var minPrice);
             var maxParse = int.TryParse(txtMaxSell.Text, out var maxPrice);
 
+            //TODO: Fix this correctly
+            minParse = true;
+            maxParse = true;
+
             if (minParse && maxParse)
             {
                 Logger.Log(LogType.Info, $"Program started. Searching for {numberToBuy} consumables.");

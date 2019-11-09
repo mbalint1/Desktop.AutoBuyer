@@ -5,9 +5,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>AutoBuyer.DbBuilder</RootNamespace>
-    <AssemblyName>AutoBuyer.DbBuilder</AssemblyName>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoBuyer.Data</RootNamespace>
+    <AssemblyName>AutoBuyer.Data</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Npgsql, Version=4.0.10.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.4.0.10\lib\net451\Npgsql.dll</HintPath>
@@ -40,6 +43,7 @@
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
@@ -65,19 +69,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbUtilities.cs" />
+    <Compile Include="DataProvider.cs" />
     <Compile Include="DTO\Player.cs" />
     <Compile Include="DTO\PlayerType.cs" />
     <Compile Include="DTO\PlayerVersion.cs" />
-    <Compile Include="FutParsers.cs" />
-    <Compile Include="PostgresProvider.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="DTO\TransactionLog.cs" />
+    <Compile Include="DTO\TransactionType.cs" />
+    <Compile Include="Enums\FutSource.cs" />
+    <Compile Include="FutProvider.cs" />
+    <Compile Include="Interfaces\IDbProvider.cs" />
+    <Compile Include="Interfaces\IFutParser.cs" />
+    <Compile Include="LogProvider.cs" />
+    <Compile Include="Utilities\FutbinParser.cs" />
+    <Compile Include="Postgres\PostgresProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Queries.cs" />
-    <Compile Include="WebUtilities.cs" />
+    <Compile Include="Postgres\Queries.cs" />
+    <Compile Include="Utilities\FutwizParser.cs" />
+    <Compile Include="Interfaces\IWebUtility.cs" />
+    <Compile Include="Utilities\LogParser.cs" />
+    <Compile Include="Utilities\WebUtility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
