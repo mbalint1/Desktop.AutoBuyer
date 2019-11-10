@@ -12,7 +12,7 @@ namespace AutoBuyer.Core.Interfaces
         Bitmap CaptureCaptchaResults();
         bool SuccessfulSearch();
         bool SuccessfulPurchase();
-        bool IsCaptchaMessageDisplayed();
+        InterruptScreen IsProcessingInterrupted();
         Screens WhatScreenAmIOn();
     }
 }

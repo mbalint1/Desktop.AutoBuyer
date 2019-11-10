@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading;
@@ -8,6 +9,9 @@ using Timer = System.Timers.Timer;
 using AutoBuyer.Core.Interfaces;
 using AutoBuyer.Core.Models;
 using AutoBuyer.Core.Data;
+using AutoBuyer.Data.DTO;
+using DataProvider = AutoBuyer.Data.DataProvider;
+using Player = AutoBuyer.Core.Models.Player;
 
 namespace AutoBuyer.Core.Controllers
 {
@@ -37,7 +41,9 @@ namespace AutoBuyer.Core.Controllers
 
         private bool KillSearchLoadingLoop { get; set; }
 
-        public bool CaptchaTime { get; set; }
+        public bool ProcessingInterrupted { get; set; }
+
+        public InterruptScreen CurrentInterrupt { get; set; }
 
         #endregion Properties and Fields
 
@@ -57,7 +63,8 @@ namespace AutoBuyer.Core.Controllers
             CaptchaMonitorTimer = new Timer();
             CaptchaMonitorTimer.Elapsed += CaptchaMonitorTimerOnElapsed;
             CaptchaMonitorTimer.Interval = Convert.ToInt32(ConfigurationManager.AppSettings["CaptchaMonitorWaitTime"]);
-            CaptchaTime = false;
+            ProcessingInterrupted = false;
+            CurrentInterrupt = InterruptScreen.None;
         }
 
         #endregion Constructors
@@ -102,6 +109,8 @@ namespace AutoBuyer.Core.Controllers
 
         public void BuyPlayers()
         {
+            var dataProvider = new DataProvider();
+
             MinPrice = 200;
             Thread.Sleep(5000);
             var decreasing = false;
@@ -110,7 +119,7 @@ namespace AutoBuyer.Core.Controllers
             CaptchaMonitorTimer.Start();
             while (MinPrice >= 200 && MinPrice <= 650 && NumberPurchased < player.NumberToPurchase)
             {
-                if (CaptchaTime)
+                if (ProcessingInterrupted)
                 {
                     //TODO: Figure out how we are handling this. Email, mobile app notification, click OK, sign back in, solve captcha, etc.
                     return;
@@ -155,13 +164,6 @@ namespace AutoBuyer.Core.Controllers
 
                 if (succesfulSearch)
                 {
-                    //Thread.Sleep(150); // We are too fast for the page
-                    //MouseController.PerformButtonClick(ButtonTypes.BuyNow);
-                    //Thread.Sleep(100); // We are too fast for the page
-                    //MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase);
-                    //Thread.Sleep(100); // We are too fast for the page
-                    //MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase);
-                    
                     DoPurchaseClicking(5, 50);
 
                     Thread.Sleep(5000); // Finalizing purchase
@@ -180,13 +182,33 @@ namespace AutoBuyer.Core.Controllers
                         }
 
                         NumberPurchased++;
-                        System.Threading.Tasks.Task.Run(() => Logger.Log(LogType.Info, $"{player.Name} purchased successfully!"));
+
+                        var transaction = new TransactionLog
+                        {
+                            Type = TransactionType.SuccessfulPurchase,
+                            TransactionDate = DateTime.Now,
+                            PlayerName = player.Name,
+                            SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
+                        };
+
+                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLogs(new List<TransactionLog>{transaction}));
+
                         Thread.Sleep(4000);
                     }
                     else
                     {
                         MouseController.PerformButtonClick(ButtonTypes.OutbidMessageBox);
-                        System.Threading.Tasks.Task.Run(() => Logger.Log(LogType.Info, $"{player.Name} failed to purchase."));
+
+                        var transaction = new TransactionLog
+                        {
+                            Type = TransactionType.FailedPurchase,
+                            TransactionDate = DateTime.Now,
+                            PlayerName = player.Name,
+                            SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
+                        };
+
+                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLogs(new List<TransactionLog> { transaction }));
+
                         Thread.Sleep(500);
                     }
                 }
@@ -220,7 +242,7 @@ namespace AutoBuyer.Core.Controllers
             MouseController.PerformButtonClick(ButtonTypes.IncreaseMinConsumable);
             while (NumberPurchased < consumable.NumberToPurchase)
             {
-                if (CaptchaTime)
+                if (ProcessingInterrupted)
                 {
                     //TODO: Figure out how we are handling this. Email, mobile app notification, click OK, sign back in, solve captcha, etc.
                     return;
@@ -379,27 +401,33 @@ namespace AutoBuyer.Core.Controllers
 
         private void CaptchaMonitorTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            var isCaptchaTime = ScreenController.IsCaptchaMessageDisplayed();
+            var firstInterrupt = ScreenController.IsProcessingInterrupted();
+            InterruptScreen doubleCheckInterrupt;
 
-            if (isCaptchaTime)
+            if (firstInterrupt == InterruptScreen.None)
+            {
+                CurrentInterrupt = InterruptScreen.None;
+                return;
+            }
+            else
             {
                 // Double Check
-
                 Thread.Sleep(1000);
 
-                isCaptchaTime = ScreenController.IsCaptchaMessageDisplayed();
+                doubleCheckInterrupt = ScreenController.IsProcessingInterrupted();
             }
 
-            if (isCaptchaTime)
+            if (firstInterrupt == doubleCheckInterrupt)
             {
-                CaptchaTime = true;
+                ProcessingInterrupted = true;
+                CurrentInterrupt = doubleCheckInterrupt;
 
                 //TODO: Inject these values into this class
                 var stuffs = File.ReadAllText(ConfigurationManager.AppSettings["pFile"]).Trim().Split(',');
 
                 if (stuffs.Length >= 3)
                 {
-                    new MessageController().SendEmail(stuffs[1], stuffs[2], "Captcha Time", "It's captcha time, yo");
+                    new MessageController().SendEmail(stuffs[1], stuffs[2], $"{CurrentInterrupt.ToString()} Time", $"It's {CurrentInterrupt.ToString()} time, yo");
                 }
                 else
                 {

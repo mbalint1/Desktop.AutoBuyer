@@ -61,6 +61,7 @@
     <Compile Include="Data\LogType.cs" />
     <Compile Include="Data\MockDB.cs" />
     <Compile Include="Enums\ButtonTypes.cs" />
+    <Compile Include="Enums\InterruptScreen.cs" />
     <Compile Include="Enums\RunMode.cs" />
     <Compile Include="Enums\Screens.cs" />
     <Compile Include="Interfaces\IKeyboardController.cs" />
@@ -80,6 +81,11 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBuyer.DbBuilder\AutoBuyer.Data.csproj">
+      <Project>{4fad3526-e954-4be4-bac4-4688a1e2b4e7}</Project>
+      <Name>AutoBuyer.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

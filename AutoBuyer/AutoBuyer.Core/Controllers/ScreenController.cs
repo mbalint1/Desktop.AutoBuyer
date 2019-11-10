@@ -294,7 +294,7 @@ namespace AutoBuyer.Core.Controllers
             return successScore > failureScore;
         }
 
-        public bool IsCaptchaMessageDisplayed()
+        public InterruptScreen IsProcessingInterrupted()
         {
             var imageWorker = new ImageManipulator();
 
@@ -305,7 +305,22 @@ namespace AutoBuyer.Core.Controllers
 
             messageCapture.Dispose();
 
-            return captcha > 85 || serviceUnavailable > 85;
+            if (captcha > 85)
+            {
+                return InterruptScreen.Captcha;
+            }
+
+            if (serviceUnavailable > 85)
+            {
+                return InterruptScreen.ServiceUnavailable;
+            }
+
+            if (WhatScreenAmIOn() == Screens.Login)
+            {
+                return InterruptScreen.Login;
+            }
+
+            return InterruptScreen.None;
         }
 
         public Screens WhatScreenAmIOn()
