@@ -54,9 +54,9 @@ namespace AutoBuyer.Data
             }
         }
 
-        public void SaveTransactionLogs(List<TransactionLog> logs)
+        public void SaveTransactionLog(TransactionLog log)
         {
-            _dbProvider.InsertTransactionLogs(logs);
+            _dbProvider.InsertTransactionLog(log);
         }
     }
 }

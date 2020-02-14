@@ -191,7 +191,7 @@ namespace AutoBuyer.Core.Controllers
                             SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLogs(new List<TransactionLog>{transaction}));
+                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLog(transaction));
 
                         Thread.Sleep(4000);
                     }
@@ -207,7 +207,7 @@ namespace AutoBuyer.Core.Controllers
                             SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLogs(new List<TransactionLog> { transaction }));
+                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLog(transaction));
 
                         Thread.Sleep(500);
                     }

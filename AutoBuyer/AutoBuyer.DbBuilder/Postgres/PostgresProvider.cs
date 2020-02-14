@@ -78,7 +78,7 @@ namespace AutoBuyer.Data.Postgres
             }
         }
 
-        public void InsertTransactionLogs(List<TransactionLog> logs)
+        public void InsertTransactionLog(TransactionLog log)
         {
             try
             {
@@ -86,24 +86,14 @@ namespace AutoBuyer.Data.Postgres
                 {
                     conn.Open();
 
-                    for (int i = 0; i < logs.Count; i++)
+                    using (var cmd = new NpgsqlCommand())
                     {
-                        var log = logs[i];
-
-                        using (var cmd = new NpgsqlCommand())
-                        {
-                            cmd.Connection = conn;
-                            cmd.CommandText = Queries.InsertTransactionLogs;
-                            Queries.AddTransactionLogParams(cmd, log);
-                            if (i == 0)
-                            {
-                                cmd.Prepare();
-                            }
-
-                            var transactionId = cmd.ExecuteScalar()?.ToString();
-
-                            log.TransactionId = transactionId;
-                        }
+                        cmd.Connection = conn;
+                        cmd.CommandText = Queries.InsertTransactionLogs;
+                        Queries.AddTransactionLogParams(cmd, log);
+                        cmd.Prepare();
+                        var transactionId = cmd.ExecuteScalar()?.ToString();
+                        log.TransactionId = transactionId;
                     }
                 }
             }

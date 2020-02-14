@@ -7,6 +7,6 @@ namespace AutoBuyer.Data.Interfaces
     {
         void InsertPlayers(List<Player> players);
 
-        void InsertTransactionLogs(List<TransactionLog> logs);
+        void InsertTransactionLog(TransactionLog log);
     }
 }

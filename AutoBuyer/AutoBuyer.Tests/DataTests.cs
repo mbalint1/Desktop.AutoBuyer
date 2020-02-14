@@ -20,7 +20,7 @@ namespace AutoBuyer.Tests
                 TransactionDate = DateTime.Now
             };
 
-            new DataProvider().SaveTransactionLogs(new List<TransactionLog>{transaction});
+            new DataProvider().SaveTransactionLog(transaction);
         }
     }
 }
