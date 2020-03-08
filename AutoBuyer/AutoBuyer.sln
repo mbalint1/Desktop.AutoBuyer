@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Tests", "AutoBuye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.Data", "AutoBuyer.DbBuilder\AutoBuyer.Data.csproj", "{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBuyer.API.POC", "AutoBuyer.API.POC\AutoBuyer.API.POC.csproj", "{C6C5BCA3-A2C2-4B59-8DF8-E5124736F569}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6C5BCA3-A2C2-4B59-8DF8-E5124736F569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6C5BCA3-A2C2-4B59-8DF8-E5124736F569}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6C5BCA3-A2C2-4B59-8DF8-E5124736F569}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6C5BCA3-A2C2-4B59-8DF8-E5124736F569}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
