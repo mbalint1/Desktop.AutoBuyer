@@ -159,8 +159,8 @@ namespace AutoBuyer.App.Views
             var numberToBuy = Convert.ToInt32(cboMaxPlayers.SelectedItem);
             var price = cboMaxPrice.SelectedItem.ToString();
 
-            var minParse = int.TryParse(cboMinSell.SelectedValue.ToString(), out var minPrice);
-            var maxParse = int.TryParse(cboMaxSell.SelectedValue.ToString(), out var maxPrice);
+            var minParse = int.TryParse(cboMinSell.SelectedValue?.ToString(), out var minPrice);
+            var maxParse = int.TryParse(cboMaxSell.SelectedValue?.ToString(), out var maxPrice);
 
             var playerObject = new Player
             {
