@@ -11,6 +11,7 @@ namespace AutoBuyer.Data
     {
         private readonly IDbProvider _dbProvider;
 
+
         public DataProvider()
         {
             _dbProvider = new PostgresProvider();
@@ -56,7 +57,6 @@ namespace AutoBuyer.Data
 
         public void SaveTransactionLog(TransactionLog log)
         {
-            _dbProvider.InsertTransactionLog(log);
         }
     }
 }

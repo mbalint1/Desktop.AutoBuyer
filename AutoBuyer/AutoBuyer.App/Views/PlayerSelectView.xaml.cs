@@ -51,11 +51,15 @@ namespace AutoBuyer.App.Views
 
         private bool AutoSellMode { get; set; }
 
+        public string AccessToken { get; }
+
+        public List<int> AllPrices { get; }
+
         #endregion Properties
 
         #region Constructors
 
-        public PlayerSelectView(ILogger logger)
+        public PlayerSelectView(ILogger logger, string accessToken)
         {
             var dataProvider = new DataProvider();
             Logger = logger;
@@ -68,12 +72,15 @@ namespace AutoBuyer.App.Views
             AvailablePlayers = dataProvider.GetPlayerNames();
             txtPlayerToBuy.ItemsSource = AvailablePlayers;
             UserPrefs = dataProvider.GetUserPrefs();
+            AllPrices = new DataProvider().GetMaxPriceList(SelectedPlayer);
 
             SetMaxPriceList();
             SetMaxPlayersList();
             SetVisibility();
 
             screenController = new ScreenController();
+
+            AccessToken = accessToken;
         }
 
         #endregion Constructors
@@ -152,8 +159,8 @@ namespace AutoBuyer.App.Views
             var numberToBuy = Convert.ToInt32(cboMaxPlayers.SelectedItem);
             var price = cboMaxPrice.SelectedItem.ToString();
 
-            var minParse = int.TryParse(txtMinSell.Text, out var minPrice);
-            var maxParse = int.TryParse(txtMaxSell.Text, out var maxPrice);
+            var minParse = int.TryParse(cboMinSell.SelectedValue.ToString(), out var minPrice);
+            var maxParse = int.TryParse(cboMaxSell.SelectedValue.ToString(), out var maxPrice);
 
             var playerObject = new Player
             {
@@ -167,7 +174,7 @@ namespace AutoBuyer.App.Views
 
             Logger.Log(LogType.Info, $"Program started. Searching for {numberToBuy} cards for Player: {SelectedPlayer} at {price} price");
 
-            IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger);
+            IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger, AccessToken);
             puppetMaster.NavigateToTransferSearch();
             puppetMaster.SetSearchParameters();
 
@@ -196,7 +203,7 @@ namespace AutoBuyer.App.Views
 
         private void SetMaxPriceList()
         {
-            cboMaxPrice.ItemsSource = new DataProvider().GetMaxPriceList(SelectedPlayer);
+            cboMaxPrice.ItemsSource = AllPrices;
         }
 
         private void SetMaxPlayersList()
@@ -219,6 +226,7 @@ namespace AutoBuyer.App.Views
             chkValidPlayer.IsChecked = false;
             chkValidMaxPlayers.IsChecked = false;
             chkValidPrice.IsChecked = false;
+            chkAutoSell.IsChecked = false;
 
             cboMaxPlayers.SelectedIndex = -1;
             cboMaxPrice.SelectedIndex = -1;
@@ -226,8 +234,8 @@ namespace AutoBuyer.App.Views
             lblAutoResell.Visibility = Visibility.Hidden;
             lblMinSell.Visibility = Visibility.Hidden;
             lblMaxSell.Visibility = Visibility.Hidden;
-            txtMinSell.Visibility = Visibility.Hidden;
-            txtMaxSell.Visibility = Visibility.Hidden;
+            cboMinSell.Visibility = Visibility.Hidden;
+            cboMaxSell.Visibility = Visibility.Hidden;
             chkAutoSell.Visibility = Visibility.Hidden;
         }
 
@@ -235,9 +243,21 @@ namespace AutoBuyer.App.Views
 
         private void ChkAutoSell_OnChecked(object sender, RoutedEventArgs e)
         {
+            var purchasePrice = Convert.ToInt32(cboMaxPrice.Text);
+            var minProfitable = (purchasePrice * .05) + purchasePrice;
+            var roundedUp = (int)Math.Ceiling(minProfitable);
+            var minSell = AllPrices.First(price => price > roundedUp);
+            var maxSell = AllPrices.First(sellPrice => sellPrice > minSell);
+
+            cboMinSell.ItemsSource = AllPrices.Where(x => x >= minSell).Take(100);
+            cboMaxSell.ItemsSource = AllPrices.Where(x => x >= maxSell).Take(100);
+
+            cboMinSell.SelectedItem = minSell;
+            cboMaxSell.SelectedItem = maxSell;
+
             AutoSellMode = true;
-            txtMinSell.Visibility = Visibility.Visible;
-            txtMaxSell.Visibility = Visibility.Visible;
+            cboMinSell.Visibility = Visibility.Visible;
+            cboMaxSell.Visibility = Visibility.Visible;
             lblMinSell.Visibility = Visibility.Visible;
             lblMaxSell.Visibility = Visibility.Visible;
         }
@@ -245,8 +265,8 @@ namespace AutoBuyer.App.Views
         private void ChkAutoSell_OnUnchecked(object sender, RoutedEventArgs e)
         {
             AutoSellMode = false;
-            txtMinSell.Visibility = Visibility.Hidden;
-            txtMaxSell.Visibility = Visibility.Hidden;
+            cboMinSell.Visibility = Visibility.Hidden;
+            cboMaxSell.Visibility = Visibility.Hidden;
             lblMinSell.Visibility = Visibility.Hidden;
             lblMaxSell.Visibility = Visibility.Hidden;
         }
@@ -256,6 +276,23 @@ namespace AutoBuyer.App.Views
             var playerCandidate = item.ToString().ToLower().Replace(" ", string.Empty);
 
             return playerCandidate.Contains(search.ToLower());
+        }
+
+        private void CboMinSell_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var combo = (System.Windows.Controls.ComboBox) sender;
+
+            var goodInt = int.TryParse(combo?.SelectedItem?.ToString(), out var selectedMin);
+
+            if (goodInt)
+            {
+                var newSelectedMax = AllPrices.First(x => x > selectedMin);
+                cboMaxSell.SelectedItem = newSelectedMax;
+            }
+        }
+
+        private void CboMaxSell_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
         }
     }
 }

@@ -40,9 +40,9 @@
             <TextBlock Grid.Row="7" Name="lblAutoResell" Foreground="Yellow" FontSize="16" Text="Auto Resell Mode" />
             <CheckBox Grid.Row="7" Margin="130,5,0,0" Name="chkAutoSell" Checked="ChkAutoSell_OnChecked" Unchecked="ChkAutoSell_OnUnchecked"></CheckBox>
             <TextBlock Grid.Row="7" Name="lblMinSell" Margin="180,0,0,0" Foreground="Yellow" FontSize="16" Text="Min Sell Price" />
-            <TextBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="285,0,0,0" Height="25" Width="50" Name="txtMinSell" Visibility="Visible"></TextBox>
-            <TextBlock Grid.Row="7" Name="lblMaxSell" Margin="350,0,0,0" Foreground="Yellow" FontSize="16" Text="Max Sell Price" />
-            <TextBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="460,0,0,0" Height="25" Width="50" Name="txtMaxSell" Visibility="Visible"></TextBox>
+            <ComboBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="285,0,0,0" Height="25" Width="100" Name="cboMinSell" Visibility="Visible" SelectionChanged="CboMinSell_OnSelectionChanged"></ComboBox>
+            <TextBlock Grid.Row="7" Name="lblMaxSell" Margin="400,0,0,0" Foreground="Yellow" FontSize="16" Text="Max Sell Price" />
+            <ComboBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="510,0,0,0" Height="25" Width="100" Name="cboMaxSell" Visibility="Visible" SelectionChanged="CboMaxSell_OnSelectionChanged"></ComboBox>
 
             <Button Grid.Row="8" Grid.Column="0" Name="btnStart" HorizontalAlignment="Left" Margin="5,0,0,0" Height="30" Width="150" Content="Start Auto Buyer!" Click="BtnStart_OnClick" Background="DarkSlateGray" Foreground="Yellow"></Button>
         </Grid>

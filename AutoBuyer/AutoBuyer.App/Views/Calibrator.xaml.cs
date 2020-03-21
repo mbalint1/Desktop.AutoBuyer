@@ -35,8 +35,8 @@ namespace AutoBuyer.App.Views
         private void btnExit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.MessageBox.Show("Close any instances of Firefox then press OK.");
-            var playerView = new PlayerSelectView(new Logger());
-            playerView.Show();
+            //var playerView = new PlayerSelectView(new Logger());
+            //playerView.Show();
             Close();
         }
 

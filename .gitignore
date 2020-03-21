@@ -16,3 +16,5 @@
 /AutoBuyer/AutoBuyer.DbBuilder/bin/Debug
 /AutoBuyer/AutoBuyer.DbBuilder/bin/Release
 /AutoBuyer/AutoBuyer.DbBuilder/obj
+/AutoBuyer/AutoBuyer.App/App.config
+/AutoBuyer/AutoBuyer.Tests/App.config

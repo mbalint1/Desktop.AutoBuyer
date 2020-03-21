@@ -13,5 +13,9 @@ namespace AutoBuyer.Data.DTO
         public string PlayerName { get; set; }
 
         public int SearchPrice { get; set; }
+
+        public int? SellPrice { get; set; }
+
+        public string UserName { get; set; }
     }
 }

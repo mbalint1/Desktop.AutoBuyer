@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Threading;
 using System.Timers;
+using AutoBuyer.Core.API;
 using AutoBuyer.Core.Enums;
 using Timer = System.Timers.Timer;
 using AutoBuyer.Core.Interfaces;
@@ -45,11 +46,13 @@ namespace AutoBuyer.Core.Controllers
 
         public InterruptScreen CurrentInterrupt { get; set; }
 
+        public string AccessToken { get; }
+
         #endregion Properties and Fields
 
         #region Constructors
 
-        public PuppetMaster(IScreenController screenController, ISearchObject searchObject, ILogger logger)
+        public PuppetMaster(IScreenController screenController, ISearchObject searchObject, ILogger logger, string token)
         {
             ScreenController = screenController;
             MouseController = new MouseController(searchObject.Mode);
@@ -65,6 +68,7 @@ namespace AutoBuyer.Core.Controllers
             CaptchaMonitorTimer.Interval = Convert.ToInt32(ConfigurationManager.AppSettings["CaptchaMonitorWaitTime"]);
             ProcessingInterrupted = false;
             CurrentInterrupt = InterruptScreen.None;
+            AccessToken = token;
         }
 
         #endregion Constructors
@@ -109,7 +113,7 @@ namespace AutoBuyer.Core.Controllers
 
         public void BuyPlayers()
         {
-            var dataProvider = new DataProvider();
+            var dataProvider = new ApiProvider();
 
             MinPrice = 200;
             Thread.Sleep(5000);
@@ -188,10 +192,11 @@ namespace AutoBuyer.Core.Controllers
                             Type = TransactionType.SuccessfulPurchase,
                             TransactionDate = DateTime.Now,
                             PlayerName = player.Name,
-                            SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
+                            SearchPrice = Convert.ToInt32(player.MaxPurchasePrice),
+                            SellPrice = player.SellMax > 0 ? (int?) player.SellMax : null
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLog(transaction));
+                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, AccessToken));
 
                         Thread.Sleep(4000);
                     }
@@ -207,7 +212,7 @@ namespace AutoBuyer.Core.Controllers
                             SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.SaveTransactionLog(transaction));
+                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, AccessToken));
 
                         Thread.Sleep(500);
                     }

@@ -30,12 +30,15 @@ namespace AutoBuyer.App.Views
 
         public bool AutoSellMode { get; private set; }
 
-        public ConsumableSelectView(ILogger logger)
+        public string AccessToken { get; }
+
+        public ConsumableSelectView(ILogger logger, string token)
         {
             InitializeComponent();
 
             Logger = logger;
             screenController = new ScreenController();
+            AccessToken = token;
 
             Loaded += OnLoaded;
 
@@ -85,7 +88,7 @@ Enter the Max BIN price you wish to pay (pick an item that is >= 500 coins as th
                     SellMax = maxPrice
                 };
 
-                IPuppetMaster puppetMaster = new PuppetMaster(screenController, consumable, Logger);
+                IPuppetMaster puppetMaster = new PuppetMaster(screenController, consumable, Logger, AccessToken);
                 Task.Factory.StartNew(() => PuppetMaster_Go(puppetMaster));
             }
 
