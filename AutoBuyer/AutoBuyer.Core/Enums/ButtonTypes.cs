@@ -21,6 +21,7 @@
         ListMinTxt,
         ListMaxTxt,
         ListItemFinal,
-        OutbidMessageBox
+        OutbidMessageBox,
+        EaLogIn
     }
 }

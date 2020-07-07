@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Threading;
 using System.Timers;
 using AutoBuyer.Core.API;
@@ -11,7 +9,6 @@ using AutoBuyer.Core.Interfaces;
 using AutoBuyer.Core.Models;
 using AutoBuyer.Core.Data;
 using AutoBuyer.Data.DTO;
-using DataProvider = AutoBuyer.Data.DataProvider;
 using Player = AutoBuyer.Core.Models.Player;
 
 namespace AutoBuyer.Core.Controllers
@@ -48,11 +45,19 @@ namespace AutoBuyer.Core.Controllers
 
         public string AccessToken { get; }
 
+        private int PurchaseLoopIterations { get; }
+
+        private int MsBetweenPurchaseClicks { get; }
+
+        private bool AutoRecover { get; set; }
+
+        private bool PauseInterruptChecks { get; set; }
+
         #endregion Properties and Fields
 
         #region Constructors
 
-        public PuppetMaster(IScreenController screenController, ISearchObject searchObject, ILogger logger, string token)
+        public PuppetMaster(IScreenController screenController, ISearchObject searchObject, ILogger logger, string token, bool autoRecover = false)
         {
             ScreenController = screenController;
             MouseController = new MouseController(searchObject.Mode);
@@ -69,6 +74,10 @@ namespace AutoBuyer.Core.Controllers
             ProcessingInterrupted = false;
             CurrentInterrupt = InterruptScreen.None;
             AccessToken = token;
+            PurchaseLoopIterations = Convert.ToInt32(ConfigurationManager.AppSettings["purchaseLoopIterations"]);
+            MsBetweenPurchaseClicks = Convert.ToInt32(ConfigurationManager.AppSettings["purchaseLoopMsBetweenClicks"]);
+
+            AutoRecover = autoRecover;
         }
 
         #endregion Constructors
@@ -121,23 +130,35 @@ namespace AutoBuyer.Core.Controllers
             var player = (Player)SearchObject;
 
             CaptchaMonitorTimer.Start();
-            while (MinPrice >= 200 && MinPrice <= 650 && NumberPurchased < player.NumberToPurchase)
+            while (MinPrice >= 200 && MinPrice <= 450 && NumberPurchased < player.NumberToPurchase)
             {
                 if (ProcessingInterrupted)
                 {
-                    //TODO: Figure out how we are handling this. Email, mobile app notification, click OK, sign back in, solve captcha, etc.
-                    return;
+                    var canContinue = TryRecoverFromInterrupt();
+
+                    if (!canContinue)
+                    {
+                        const int nestorWants3Emails = 3;
+
+                        for (int i = 0; i < nestorWants3Emails; i++)
+                        {
+                            Thread.Sleep(20000);
+                            new MessageController().SendEmail("Processing Interrupted", "Autobuyer needs your attention. There may be a captcha to solve.");
+                        }
+                        
+                        return;
+                    }
                 }
 
                 var succesfulSearch = false;
                 Thread.Sleep(1200);
 
-                if (!decreasing && MinPrice < 650)
+                if (!decreasing && MinPrice < 450)
                 {
                     MouseController.PerformButtonClick(ButtonTypes.IncreaseMinPlayer);
                     MinPrice += 50;
                 }
-                if (MinPrice == 650)
+                if (MinPrice == 450)
                 {
                     decreasing = true;
                 }
@@ -168,9 +189,12 @@ namespace AutoBuyer.Core.Controllers
 
                 if (succesfulSearch)
                 {
-                    DoPurchaseClicking(5, 50);
+                    DoPurchaseClicking(PurchaseLoopIterations, MsBetweenPurchaseClicks);
 
-                    Thread.Sleep(5000); // Finalizing purchase
+                    Thread.Sleep(1000);
+                    MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase); // For some reason the confirmation box is sticking around
+
+                    Thread.Sleep(4000); // Finalizing purchase
 
                     if (ScreenController.SuccessfulPurchase())
                     {
@@ -223,17 +247,7 @@ namespace AutoBuyer.Core.Controllers
 
             CaptchaMonitorTimer.Stop();
 
-            //TODO: Inject these values into this class
-            var stuffs = File.ReadAllText(ConfigurationManager.AppSettings["pFile"]).Trim().Split(',');
-
-            if (stuffs.Length >= 3)
-            {
-                new MessageController().SendEmail(stuffs[1], stuffs[2], "Run Complete", "We done here, yo");
-            }
-            else
-            {
-                //TODO: Move validation for this somewhere else
-            }
+            new MessageController().SendEmail("Run Complete", "We done here, yo");
         }
 
         public void BuyConsumables()
@@ -284,7 +298,7 @@ namespace AutoBuyer.Core.Controllers
 
                 if (succesfulSearch)
                 {
-                    DoPurchaseClicking(5, 50);
+                    DoPurchaseClicking(PurchaseLoopIterations, MsBetweenPurchaseClicks);
 
                     Thread.Sleep(5000); // Finalizing purchase
 
@@ -317,17 +331,7 @@ namespace AutoBuyer.Core.Controllers
             }
             CaptchaMonitorTimer.Stop();
 
-            //TODO: Inject these values into this class
-            var stuffs = File.ReadAllText(ConfigurationManager.AppSettings["pFile"]).Trim().Split(',');
-
-            if (stuffs.Length >= 3)
-            {
-                new MessageController().SendEmail(stuffs[1], stuffs[2], "Run Complete", "We done here, yo");
-            }
-            else
-            {
-                //TODO: Move validation for this somewhere else
-            }
+            new MessageController().SendEmail("Run Complete", "We done here, yo");
         }
 
         #endregion Public Methods
@@ -395,6 +399,60 @@ namespace AutoBuyer.Core.Controllers
             MouseController.PerformButtonClick(ButtonTypes.ListItemFinal);
         }
 
+        private bool LogBackIn()
+        {
+            var successfulRecover = false;
+
+            Thread.Sleep(2000); // Make sure button is active
+            MouseController.PerformButtonClick(ButtonTypes.Login);
+            Thread.Sleep(30000); // This can take awhile to load
+
+            var currentScreen = ScreenController.WhatScreenAmIOn();
+
+            if (currentScreen == Screens.EaSignIn)
+            {
+                Thread.Sleep(2000); // Make sure button is active
+                MouseController.PerformButtonClick(ButtonTypes.EaLogIn);
+                Thread.Sleep(30000); // This can take awhile to load
+            }
+
+            currentScreen = ScreenController.WhatScreenAmIOn();
+
+            if (currentScreen == Screens.Home)
+            {
+                NavigateToTransferSearch();
+                SetSearchParameters();
+                successfulRecover = true;
+            }
+
+            return successfulRecover;
+        }
+
+        private bool TryRecoverFromInterrupt()
+        {
+            bool canContinue = false;
+
+            if (AutoRecover)
+            {
+                if (CurrentInterrupt == InterruptScreen.Login)
+                {
+                    PauseInterruptChecks = true;
+
+                    var recovered = LogBackIn();
+
+                    if (recovered)
+                    {
+                        ProcessingInterrupted = false;
+                        Thread.Sleep(5000);
+                        PauseInterruptChecks = false;
+
+                        canContinue = true;
+                    }
+                }
+            }
+            return canContinue;
+        }
+
         #endregion Private Methods
 
         #region Event Handlers
@@ -406,37 +464,30 @@ namespace AutoBuyer.Core.Controllers
 
         private void CaptchaMonitorTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            var firstInterrupt = ScreenController.IsProcessingInterrupted();
-            InterruptScreen doubleCheckInterrupt;
-
-            if (firstInterrupt == InterruptScreen.None)
+            if (!PauseInterruptChecks)
             {
-                CurrentInterrupt = InterruptScreen.None;
-                return;
-            }
-            else
-            {
-                // Double Check
-                Thread.Sleep(1000);
+                var firstInterrupt = ScreenController.IsProcessingInterrupted();
+                InterruptScreen doubleCheckInterrupt;
 
-                doubleCheckInterrupt = ScreenController.IsProcessingInterrupted();
-            }
-
-            if (firstInterrupt == doubleCheckInterrupt)
-            {
-                ProcessingInterrupted = true;
-                CurrentInterrupt = doubleCheckInterrupt;
-
-                //TODO: Inject these values into this class
-                var stuffs = File.ReadAllText(ConfigurationManager.AppSettings["pFile"]).Trim().Split(',');
-
-                if (stuffs.Length >= 3)
+                if (firstInterrupt == InterruptScreen.None)
                 {
-                    new MessageController().SendEmail(stuffs[1], stuffs[2], $"{CurrentInterrupt.ToString()} Time", $"It's {CurrentInterrupt.ToString()} time, yo");
+                    CurrentInterrupt = InterruptScreen.None;
+                    return;
                 }
                 else
                 {
-                    //TODO: Move validation for this somewhere else
+                    // Double Check
+                    Thread.Sleep(1000);
+
+                    doubleCheckInterrupt = ScreenController.IsProcessingInterrupted();
+                }
+
+                if (firstInterrupt == doubleCheckInterrupt)
+                {
+                    ProcessingInterrupted = true;
+                    CurrentInterrupt = doubleCheckInterrupt;
+
+                    //new MessageController().SendEmail($"{CurrentInterrupt.ToString()} Time", $"It's {CurrentInterrupt.ToString()} time, yo");
                 }
             }
         }

@@ -21,9 +21,7 @@ namespace AutoBuyer.Tests
         [TestMethod]
         public void SendEmailTest()
         {
-            var stuffs = File.ReadAllText(ConfigurationManager.AppSettings["pFile"]).Trim().Split(',');
-
-            new MessageController().SendEmail(stuffs[1], stuffs[2], "Testing", "Test message, yo");
+            new MessageController().SendEmail("Testing", "Test message, yo");
         }
     }
 }

@@ -51,6 +51,8 @@ namespace AutoBuyer.App.Views
 
         private bool AutoSellMode { get; set; }
 
+        private bool AutoRecover { get; set; }
+
         public string AccessToken { get; }
 
         public List<int> AllPrices { get; }
@@ -151,7 +153,9 @@ namespace AutoBuyer.App.Views
             btnStart.Visibility = Visibility.Visible;
 
             lblAutoResell.Visibility = Visibility.Visible;
+            lblAutoRecover.Visibility = Visibility.Visible;
             chkAutoSell.Visibility = Visibility.Visible;
+            chkAutoRecover.Visibility = Visibility.Visible;
         }
 
         private void BtnStart_OnClick(object sender, RoutedEventArgs e)
@@ -174,7 +178,7 @@ namespace AutoBuyer.App.Views
 
             Logger.Log(LogType.Info, $"Program started. Searching for {numberToBuy} cards for Player: {SelectedPlayer} at {price} price");
 
-            IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger, AccessToken);
+            IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger, AccessToken, AutoRecover);
             puppetMaster.NavigateToTransferSearch();
             puppetMaster.SetSearchParameters();
 
@@ -227,16 +231,19 @@ namespace AutoBuyer.App.Views
             chkValidMaxPlayers.IsChecked = false;
             chkValidPrice.IsChecked = false;
             chkAutoSell.IsChecked = false;
+            chkAutoRecover.IsChecked = false;
 
             cboMaxPlayers.SelectedIndex = -1;
             cboMaxPrice.SelectedIndex = -1;
 
             lblAutoResell.Visibility = Visibility.Hidden;
+            lblAutoRecover.Visibility = Visibility.Hidden;
             lblMinSell.Visibility = Visibility.Hidden;
             lblMaxSell.Visibility = Visibility.Hidden;
             cboMinSell.Visibility = Visibility.Hidden;
             cboMaxSell.Visibility = Visibility.Hidden;
             chkAutoSell.Visibility = Visibility.Hidden;
+            chkAutoRecover.Visibility = Visibility.Hidden;
         }
 
         #endregion Private Methods
@@ -293,6 +300,16 @@ namespace AutoBuyer.App.Views
 
         private void CboMaxSell_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+        }
+
+        private void ChkAutoRecover_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AutoRecover = true;
+        }
+
+        private void ChkAutoRecover_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AutoRecover = false;
         }
     }
 }

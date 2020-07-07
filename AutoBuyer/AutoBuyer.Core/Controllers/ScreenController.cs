@@ -40,6 +40,8 @@ namespace AutoBuyer.Core.Controllers
 
         private Bitmap ServiceUnavailableTrainer { get; }
 
+        private Bitmap EaLoginTrainer { get; }
+
         #endregion Properties
 
         #region Native Code
@@ -80,6 +82,7 @@ namespace AutoBuyer.Core.Controllers
                 FailedPurchaseTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}FailedPurchase.png"));
                 CaptchaMessageTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}CaptchaMessage.png"));
                 ServiceUnavailableTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}ServiceUnavailable.png"));
+                EaLoginTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}EaLogIn.png"));
             }
             catch (Exception ex)
             {
@@ -333,6 +336,7 @@ namespace AutoBuyer.Core.Controllers
             var home = imageWorker.PercentMatch(current, HomeTrainer);
             var transferHome = imageWorker.PercentMatch(current, TransferHomeTrainer);
             var transferSearch = imageWorker.PercentMatch(current, TransferSearchTrainer);
+            var eaLogin = imageWorker.PercentMatch(current, EaLoginTrainer);
             current.Dispose();
 
             var dict = new Dictionary<Screens, decimal>
@@ -340,7 +344,8 @@ namespace AutoBuyer.Core.Controllers
                 {Screens.Login, login},
                 {Screens.Home, home},
                 {Screens.TransferHome, transferHome},
-                {Screens.TransferSearch, transferSearch}
+                {Screens.TransferSearch, transferSearch},
+                {Screens.EaSignIn, eaLogin }
             };
 
             var screen = dict.OrderByDescending(x => x.Value).FirstOrDefault().Key;

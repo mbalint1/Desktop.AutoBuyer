@@ -53,6 +53,8 @@ namespace AutoBuyer.Core.Controllers
 
         private Point OutbidMessageBoxCoordinates { get; set; }
 
+        private Point EaLoginButton { get; set; }
+
         private const int MOUSEEVENTF_LEFTDOWN = 0x02;
 
         private const int MOUSEEVENTF_LEFTUP = 0x04;
@@ -152,6 +154,9 @@ namespace AutoBuyer.Core.Controllers
                 case ButtonTypes.OutbidMessageBox:
                     DoClickAtPosition(OutbidMessageBoxCoordinates.X, OutbidMessageBoxCoordinates.Y);
                     break;
+                case ButtonTypes.EaLogIn:
+                    DoClickAtPosition(EaLoginButton.X, EaLoginButton.Y);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null);
             }
@@ -213,11 +218,8 @@ namespace AutoBuyer.Core.Controllers
             var listMaxTxtY = Convert.ToInt32(ConfigurationManager.AppSettings["TxtListMax-Y"]);
             var listItemX = Convert.ToInt32(ConfigurationManager.AppSettings["ListItem-X"]);
             var listItemY = Convert.ToInt32(ConfigurationManager.AppSettings["ListItem-Y"]);
-
-
-            //TODO remove eventually
-            var outbidX = Convert.ToInt32(ConfigurationManager.AppSettings["OutbidMessageBox-X"]);
-            var outbidY = Convert.ToInt32(ConfigurationManager.AppSettings["OutbidMessageBox-Y"]);
+            var eaLoginX = Convert.ToInt32(ConfigurationManager.AppSettings["EaLogIn-X"]);
+            var eaLoginY = Convert.ToInt32(ConfigurationManager.AppSettings["EaLogIn-Y"]);
 
             LoginCoordinates = new Point(loginX, loginY);
             TransferNavigateCoordinates = new Point(transfersNavigateX, transfersNavigateY);
@@ -238,8 +240,11 @@ namespace AutoBuyer.Core.Controllers
             ListMinText = new Point(listMinTxtX, listMinTxtY);
             ListMaxText = new Point(listMaxTxtX, listMaxTxtY);
             ListItemFinal = new Point(listItemX, listItemY);
+            EaLoginButton = new Point(eaLoginX, eaLoginY);
 
             //TODO remove eventually
+            var outbidX = Convert.ToInt32(ConfigurationManager.AppSettings["OutbidMessageBox-X"]);
+            var outbidY = Convert.ToInt32(ConfigurationManager.AppSettings["OutbidMessageBox-Y"]);
             OutbidMessageBoxCoordinates = new Point(outbidX, outbidY);
         }
 

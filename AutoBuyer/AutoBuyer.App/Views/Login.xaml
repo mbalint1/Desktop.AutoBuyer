@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AutoBuyer.App.Views"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
-        Title="Login" Height="350" Width="350">
+        Title="Login" Height="366" Width="350">
     <Window.Background>
         <ImageBrush ImageSource="../Resources/fiber1.png"></ImageBrush>
     </Window.Background>
@@ -17,9 +17,10 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="0,20,0,0" FontFamily="Lucida Sans Demibold Italic" FontSize="40" FontWeight="Normal" Foreground="Yellow" Text="Welcome! Please log in:"></TextBlock>
@@ -27,10 +28,12 @@
         <TextBox Grid.Row="2" Name="txtUserName" HorizontalAlignment="Center" VerticalAlignment="Top" Height="25" Width="150"></TextBox>
         <TextBlock Grid.Row="3" Name="lblPassword" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="-95,0,0,0" FontFamily="Arial" FontWeight="DemiBold" FontSize="12" Foreground="Yellow" Text="Password"></TextBlock>
         <PasswordBox Grid.Row="4" Name="txtPassword" HorizontalAlignment="Center" VerticalAlignment="Top" Height="25" Width="150" KeyUp="TxtPassword_OnKeyUp"></PasswordBox>
-        <TextBlock Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="-85,0,0,0" FontFamily="Arial" FontWeight="DemiBold" FontSize="12" Foreground="Yellow" Text="Select Mode"></TextBlock>
-        <RadioButton Grid.Row="6" Name="rdoPlayer" HorizontalAlignment="Left" Margin="235,0,0,0" Content="Players" IsChecked="True" FontWeight="Normal" Foreground="White"/>
-        <RadioButton Grid.Row="6" Name="rdoConsumable" HorizontalAlignment="Right" Margin="0,0,235,0" Content="Consumables" FontWeight="Normal" Foreground="White"/>
-        <fa:ImageAwesome Grid.Row="7" Name="spnLogin" Icon="Refresh" Foreground="Yellow" Spin="True" Height="25" Width="25" />
-        <Button Grid.Row="8" Name="btnLogin" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Width="75" Content="Login" Click="btnLogin_Click"></Button>
+        <CheckBox Grid.Row="5" Name="chkRemember" HorizontalAlignment="Center" Checked="ChkRemember_OnChecked" Unchecked="ChkRemember_OnUnchecked" Margin="94,0,232,0"/>
+        <TextBlock Grid.Row="5" FontFamily="Arial" FontWeight="DemiBold" FontSize="12" Foreground="Yellow" Text="Remember Me" Margin="257,2,0,0"/>
+        <TextBlock Grid.Row="6" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="-85,0,0,0" FontFamily="Arial" FontWeight="DemiBold" FontSize="12" Foreground="Yellow" Text="Select Mode"></TextBlock>
+        <RadioButton Grid.Row="7" Name="rdoPlayer" HorizontalAlignment="Left" Margin="235,0,0,0" Content="Players" IsChecked="True" FontWeight="Normal" Foreground="White"/>
+        <RadioButton Grid.Row="7" Name="rdoConsumable" HorizontalAlignment="Right" Margin="0,0,235,0" Content="Consumables" FontWeight="Normal" Foreground="White"/>
+        <fa:ImageAwesome Grid.Row="8" Name="spnLogin" Icon="Refresh" Foreground="Yellow" Spin="True" Height="25" Width="25" />
+        <Button Grid.Row="9" Name="btnLogin" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="25" Width="75" Content="Login" Click="btnLogin_Click"></Button>
     </Grid>
 </Window>
