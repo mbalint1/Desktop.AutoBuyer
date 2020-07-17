@@ -155,6 +155,10 @@
       <Project>{030a34ad-d913-4a71-8e50-8e54a111741a}</Project>
       <Name>AutoBuyer.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AutoBuyer.DbBuilder\AutoBuyer.Data.csproj">
+      <Project>{4FAD3526-E954-4BE4-BAC4-4688A1E2B4E7}</Project>
+      <Name>AutoBuyer.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

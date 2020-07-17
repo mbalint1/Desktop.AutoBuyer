@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
+using AutoBuyer.Core.Models;
 using AutoBuyer.Data.DTO;
 using Newtonsoft.Json;
 using RestSharp;
+using Player = AutoBuyer.Core.Models.Player;
 
 namespace AutoBuyer.Core.API
 {
@@ -64,15 +67,6 @@ namespace AutoBuyer.Core.API
 
             try
             {
-                //ApiClient.ExecuteAsync(request, response =>
-                //{
-                //    if (response.StatusCode == HttpStatusCode.OK)
-                //    {
-                //        var authResponse = JsonConvert.DeserializeObject<AuthResponse>(response.Content);
-                //        token = authResponse.AccessToken;
-                //    }
-                //});
-
                 var response = ApiClient.Execute(request);
 
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -86,6 +80,42 @@ namespace AutoBuyer.Core.API
             }
 
             return token;
+        }
+
+        public List<AutoBuyer.Data.DTO.Player> GetAllPlayers(string token)
+        {
+            var players = new List<AutoBuyer.Data.DTO.Player>();
+
+            var request = new RestRequest("/api/Players/", Method.GET);
+            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
+
+            try
+            {
+                var response = ApiClient.Execute(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var data = response.Content;
+
+                    var dbPlayers = JsonConvert.DeserializeObject<List<AutoBuyer.Data.DTO.Player>>(data);
+
+                    players.AddRange(dbPlayers);
+                }
+            }
+            catch (Exception e)
+            {
+            }
+
+            return players;
+        }
+
+        public void InsertSessionData(SessionInfo sessionInfo, string token)
+        {
+        }
+
+        public bool TryLockPlayerForSearch(AutoBuyer.Data.DTO.Player player)
+        {
+            return false;
         }
     }
 }

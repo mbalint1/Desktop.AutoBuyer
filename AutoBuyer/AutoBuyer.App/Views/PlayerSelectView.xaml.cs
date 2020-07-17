@@ -18,10 +18,12 @@ using Binding = System.Windows.Data.Binding;
 using System.Diagnostics;
 using System.Threading;
 using AutoBuyer.Core;
+using AutoBuyer.Core.API;
 using AutoBuyer.Core.Controllers;
 using AutoBuyer.Core.Data;
-using AutoBuyer.Core.Models;
 using AutoBuyer.Core.Interfaces;
+using AutoBuyer.Core.Models;
+using Player = AutoBuyer.Data.DTO.Player;
 
 namespace AutoBuyer.App.Views
 {
@@ -39,9 +41,9 @@ namespace AutoBuyer.App.Views
 
         #region Properties
 
-        public string SelectedPlayer { get; set; }
+        public Player SelectedPlayer { get; set; }
 
-        public ObservableCollection<string> AvailablePlayers { get; set; }
+        public ObservableCollection<Player> PlayerList { get; set; }
 
         public UserPreferences UserPrefs { get; }
 
@@ -57,6 +59,8 @@ namespace AutoBuyer.App.Views
 
         public List<int> AllPrices { get; }
 
+        public ApiProvider Api { get; }
+
         #endregion Properties
 
         #region Constructors
@@ -71,10 +75,14 @@ namespace AutoBuyer.App.Views
             Loaded += PlayerSelectView_Loaded;
             Visibility = Visibility.Visible;
 
-            AvailablePlayers = dataProvider.GetPlayerNames();
-            txtPlayerToBuy.ItemsSource = AvailablePlayers;
+            Api = new ApiProvider();
+
+            var players = Api.GetAllPlayers(accessToken);
+            PlayerList = new ObservableCollection<Player>(players);
+            txtPlayerToBuy.ItemsSource = PlayerList.Select(x => x.Name);
+
             UserPrefs = dataProvider.GetUserPrefs();
-            AllPrices = new DataProvider().GetMaxPriceList(SelectedPlayer);
+            AllPrices = new DataProvider().GetMaxPriceList(SelectedPlayer?.Name);
 
             SetMaxPriceList();
             SetMaxPlayersList();
@@ -104,9 +112,10 @@ namespace AutoBuyer.App.Views
 
         private void TxtPlayerToBuy_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectedPlayer = txtPlayerToBuy.SelectedItem?.ToString();
+            //TODO: There must be a better way. Each keystroke we are iterating through the list..
+            SelectedPlayer = PlayerList.FirstOrDefault(x => x.Name == txtPlayerToBuy.SelectedItem?.ToString());
 
-            if (AvailablePlayers.Contains(SelectedPlayer))
+            if (PlayerList.Any(x => x.Name == SelectedPlayer.Name))
             {
                 chkValidPlayer.IsChecked = true;
                 chkValidPlayer.Visibility = Visibility.Visible;
@@ -144,7 +153,7 @@ namespace AutoBuyer.App.Views
             chkValidPrice.Visibility = Visibility.Visible;
             lblMaxPlayers.Visibility = Visibility.Visible;
             cboMaxPlayers.Visibility = Visibility.Visible;
-            lblMaxPlayers.Text = $"How many {SelectedPlayer} cards do you want?";
+            lblMaxPlayers.Text = $"How many {SelectedPlayer.Name} cards do you want?";
         }
 
         private void chkValidMaxPlayers_Checked(object sender, RoutedEventArgs e)
@@ -160,32 +169,50 @@ namespace AutoBuyer.App.Views
 
         private void BtnStart_OnClick(object sender, RoutedEventArgs e)
         {
-            var numberToBuy = Convert.ToInt32(cboMaxPlayers.SelectedItem);
-            var price = cboMaxPrice.SelectedItem.ToString();
+            var canGetPlayer = Api.TryLockPlayerForSearch(SelectedPlayer);
 
-            var minParse = int.TryParse(cboMinSell.SelectedValue?.ToString(), out var minPrice);
-            var maxParse = int.TryParse(cboMaxSell.SelectedValue?.ToString(), out var maxPrice);
-
-            var playerObject = new Player
+            if (canGetPlayer)
             {
-                Name = SelectedPlayer,
-                NumberToPurchase = numberToBuy,
-                MaxPurchasePrice = price,
-                AutoSell = AutoSellMode,
-                SellMin = minPrice,
-                SellMax = maxPrice
-            };
+                var sessionInfo = new SessionInfo
+                {
+                    //TODO: This will need modified once we add multiple versions of a player
+                    PlayerVersionId = SelectedPlayer.Versions.First().VersionId,
+                    StartDate = DateTime.Now,
+                    EndSession = false
+                };
 
-            Logger.Log(LogType.Info, $"Program started. Searching for {numberToBuy} cards for Player: {SelectedPlayer} at {price} price");
+                //TODO: Async?
+                Api.InsertSessionData(sessionInfo, AccessToken);
 
-            IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger, AccessToken, AutoRecover);
-            puppetMaster.NavigateToTransferSearch();
-            puppetMaster.SetSearchParameters();
+                var numberToBuy = Convert.ToInt32(cboMaxPlayers.SelectedItem);
+                var price = cboMaxPrice.SelectedItem.ToString();
 
-            //TODO: Remove Debug Code
-            Thread.Sleep(7000);
+                int.TryParse(cboMinSell.SelectedValue?.ToString(), out var minPrice);
+                int.TryParse(cboMaxSell.SelectedValue?.ToString(), out var maxPrice);
 
-            Task.Factory.StartNew(() => PuppetMaster_Go(puppetMaster));
+                var playerObject = new AutoBuyer.Core.Models.Player
+                {
+                    Name = SelectedPlayer.Name,
+                    NumberToPurchase = numberToBuy,
+                    MaxPurchasePrice = price,
+                    AutoSell = AutoSellMode,
+                    SellMin = minPrice,
+                    SellMax = maxPrice
+                };
+
+                Logger.Log(LogType.Info, $"Program started. Searching for {numberToBuy} cards for Player: {SelectedPlayer.Name} at {price} price");
+
+                IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger, AccessToken, AutoRecover);
+                puppetMaster.NavigateToTransferSearch();
+                puppetMaster.SetSearchParameters();
+
+                //TODO: Remove Debug Code
+                Thread.Sleep(7000);
+
+                Task.Factory.StartNew(() => PuppetMaster_Go(puppetMaster));
+            }
+
+
         }
 
         private void PuppetMaster_Go(IPuppetMaster master)
@@ -212,7 +239,7 @@ namespace AutoBuyer.App.Views
 
         private void SetMaxPlayersList()
         {
-            cboMaxPlayers.ItemsSource = new DataProvider().GetMaxPlayersList(SelectedPlayer);
+            cboMaxPlayers.ItemsSource = new DataProvider().GetMaxPlayersList(SelectedPlayer?.Name);
         }
 
         private void SetVisibility()
