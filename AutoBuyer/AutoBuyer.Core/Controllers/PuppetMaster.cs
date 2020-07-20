@@ -248,6 +248,15 @@ namespace AutoBuyer.Core.Controllers
             CaptchaMonitorTimer.Stop();
 
             new MessageController().SendEmail("Run Complete", "We done here, yo");
+
+            var sessionData = new SessionInfo
+            {
+                PlayerVersionId = ((Player)SearchObject).PlayerVersionId,
+                EndDate = DateTime.Now,
+                EndSession = true
+            };
+
+            new ApiProvider().UpdateSession(sessionData, AccessToken);
         }
 
         public void BuyConsumables()

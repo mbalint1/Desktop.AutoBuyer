@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using AutoBuyer.Core.API;
+using AutoBuyer.Core.Data;
+using AutoBuyer.Core.Models;
 
 namespace AutoBuyer.App
 {
@@ -13,5 +11,16 @@ namespace AutoBuyer.App
     /// </summary>
     public partial class App : Application
     {
+        private void App_OnExit(object sender, ExitEventArgs e)
+        {
+            var sessionInfo = new SessionInfo
+            {
+                PlayerVersionId = CurrentSession.PlayerVersionId,
+                EndSession = true,
+                EndDate = DateTime.Now
+            };
+
+            new ApiProvider().UpdateSession(sessionInfo, CurrentSession.Token);
+        }
     }
 }

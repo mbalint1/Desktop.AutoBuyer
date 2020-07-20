@@ -65,6 +65,7 @@
     <Compile Include="Controllers\MouseController.cs" />
     <Compile Include="Controllers\PuppetMaster.cs" />
     <Compile Include="Controllers\ScreenController.cs" />
+    <Compile Include="Data\CurrentSession.cs" />
     <Compile Include="Data\DataProvider.cs" />
     <Compile Include="Data\ILogger.cs" />
     <Compile Include="Data\Logger.cs" />

@@ -3,21 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Binding = System.Windows.Data.Binding;
-using System.Diagnostics;
 using System.Threading;
-using AutoBuyer.Core;
 using AutoBuyer.Core.API;
 using AutoBuyer.Core.Controllers;
 using AutoBuyer.Core.Data;
@@ -169,35 +159,35 @@ namespace AutoBuyer.App.Views
 
         private void BtnStart_OnClick(object sender, RoutedEventArgs e)
         {
-            var canGetPlayer = Api.TryLockPlayerForSearch(SelectedPlayer);
+            //TODO: This will need modified once we add multiple versions of a player
+            var playerVersionId = SelectedPlayer.Versions.First().VersionId;
+
+            var sessionInfo = new SessionInfo
+            {
+                PlayerVersionId = playerVersionId,
+                StartDate = DateTime.Now,
+                EndSession = false
+            };
+
+            var canGetPlayer = Api.TryLockPlayerForSearch(sessionInfo, AccessToken);
 
             if (canGetPlayer)
             {
-                var sessionInfo = new SessionInfo
-                {
-                    //TODO: This will need modified once we add multiple versions of a player
-                    PlayerVersionId = SelectedPlayer.Versions.First().VersionId,
-                    StartDate = DateTime.Now,
-                    EndSession = false
-                };
-
-                //TODO: Async?
-                Api.InsertSessionData(sessionInfo, AccessToken);
-
                 var numberToBuy = Convert.ToInt32(cboMaxPlayers.SelectedItem);
                 var price = cboMaxPrice.SelectedItem.ToString();
 
                 int.TryParse(cboMinSell.SelectedValue?.ToString(), out var minPrice);
                 int.TryParse(cboMaxSell.SelectedValue?.ToString(), out var maxPrice);
 
-                var playerObject = new AutoBuyer.Core.Models.Player
+                var playerObject = new Core.Models.Player
                 {
                     Name = SelectedPlayer.Name,
                     NumberToPurchase = numberToBuy,
                     MaxPurchasePrice = price,
                     AutoSell = AutoSellMode,
                     SellMin = minPrice,
-                    SellMax = maxPrice
+                    SellMax = maxPrice,
+                    PlayerVersionId = playerVersionId
                 };
 
                 Logger.Log(LogType.Info, $"Program started. Searching for {numberToBuy} cards for Player: {SelectedPlayer.Name} at {price} price");
@@ -211,8 +201,6 @@ namespace AutoBuyer.App.Views
 
                 Task.Factory.StartNew(() => PuppetMaster_Go(puppetMaster));
             }
-
-
         }
 
         private void PuppetMaster_Go(IPuppetMaster master)
@@ -226,6 +214,70 @@ namespace AutoBuyer.App.Views
                 Logger.Log(LogType.Error, $"Error in program: {ex.Message} \n{ex.StackTrace}");
                 System.Windows.Forms.MessageBox.Show("Error in program. Please close program and browser and try again");
             }
+        }
+
+        private void ChkAutoSell_OnChecked(object sender, RoutedEventArgs e)
+        {
+            var purchasePrice = Convert.ToInt32(cboMaxPrice.Text);
+            var minProfitable = (purchasePrice * .05) + purchasePrice;
+            var roundedUp = (int)Math.Ceiling(minProfitable);
+            var minSell = AllPrices.First(price => price > roundedUp);
+            var maxSell = AllPrices.First(sellPrice => sellPrice > minSell);
+
+            cboMinSell.ItemsSource = AllPrices.Where(x => x >= minSell).Take(100);
+            cboMaxSell.ItemsSource = AllPrices.Where(x => x >= maxSell).Take(100);
+
+            cboMinSell.SelectedItem = minSell;
+            cboMaxSell.SelectedItem = maxSell;
+
+            AutoSellMode = true;
+            cboMinSell.Visibility = Visibility.Visible;
+            cboMaxSell.Visibility = Visibility.Visible;
+            lblMinSell.Visibility = Visibility.Visible;
+            lblMaxSell.Visibility = Visibility.Visible;
+        }
+
+        private void ChkAutoSell_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AutoSellMode = false;
+            cboMinSell.Visibility = Visibility.Hidden;
+            cboMaxSell.Visibility = Visibility.Hidden;
+            lblMinSell.Visibility = Visibility.Hidden;
+            lblMaxSell.Visibility = Visibility.Hidden;
+        }
+
+        private bool Filter(string search, object item)
+        {
+            var playerCandidate = item.ToString().ToLower().Replace(" ", string.Empty);
+
+            return playerCandidate.Contains(search.ToLower());
+        }
+
+        private void CboMinSell_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var combo = (System.Windows.Controls.ComboBox)sender;
+
+            var goodInt = int.TryParse(combo?.SelectedItem?.ToString(), out var selectedMin);
+
+            if (goodInt)
+            {
+                var newSelectedMax = AllPrices.First(x => x > selectedMin);
+                cboMaxSell.SelectedItem = newSelectedMax;
+            }
+        }
+
+        private void CboMaxSell_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+
+        private void ChkAutoRecover_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AutoRecover = true;
+        }
+
+        private void ChkAutoRecover_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AutoRecover = false;
         }
 
         #endregion Events
@@ -274,69 +326,5 @@ namespace AutoBuyer.App.Views
         }
 
         #endregion Private Methods
-
-        private void ChkAutoSell_OnChecked(object sender, RoutedEventArgs e)
-        {
-            var purchasePrice = Convert.ToInt32(cboMaxPrice.Text);
-            var minProfitable = (purchasePrice * .05) + purchasePrice;
-            var roundedUp = (int)Math.Ceiling(minProfitable);
-            var minSell = AllPrices.First(price => price > roundedUp);
-            var maxSell = AllPrices.First(sellPrice => sellPrice > minSell);
-
-            cboMinSell.ItemsSource = AllPrices.Where(x => x >= minSell).Take(100);
-            cboMaxSell.ItemsSource = AllPrices.Where(x => x >= maxSell).Take(100);
-
-            cboMinSell.SelectedItem = minSell;
-            cboMaxSell.SelectedItem = maxSell;
-
-            AutoSellMode = true;
-            cboMinSell.Visibility = Visibility.Visible;
-            cboMaxSell.Visibility = Visibility.Visible;
-            lblMinSell.Visibility = Visibility.Visible;
-            lblMaxSell.Visibility = Visibility.Visible;
-        }
-
-        private void ChkAutoSell_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            AutoSellMode = false;
-            cboMinSell.Visibility = Visibility.Hidden;
-            cboMaxSell.Visibility = Visibility.Hidden;
-            lblMinSell.Visibility = Visibility.Hidden;
-            lblMaxSell.Visibility = Visibility.Hidden;
-        }
-
-        private bool Filter(string search, object item)
-        {
-            var playerCandidate = item.ToString().ToLower().Replace(" ", string.Empty);
-
-            return playerCandidate.Contains(search.ToLower());
-        }
-
-        private void CboMinSell_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var combo = (System.Windows.Controls.ComboBox) sender;
-
-            var goodInt = int.TryParse(combo?.SelectedItem?.ToString(), out var selectedMin);
-
-            if (goodInt)
-            {
-                var newSelectedMax = AllPrices.First(x => x > selectedMin);
-                cboMaxSell.SelectedItem = newSelectedMax;
-            }
-        }
-
-        private void CboMaxSell_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-        }
-
-        private void ChkAutoRecover_OnChecked(object sender, RoutedEventArgs e)
-        {
-            AutoRecover = true;
-        }
-
-        private void ChkAutoRecover_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            AutoRecover = false;
-        }
     }
 }

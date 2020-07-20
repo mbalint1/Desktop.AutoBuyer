@@ -23,5 +23,7 @@ namespace AutoBuyer.Core.Models
         public int SellMin { get; set; }
 
         public int SellMax { get; set; }
+
+        public string PlayerVersionId { get; set; }
     }
 }

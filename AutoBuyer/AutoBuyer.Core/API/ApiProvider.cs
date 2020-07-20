@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
+using AutoBuyer.Core.Data;
 using AutoBuyer.Core.Models;
 using AutoBuyer.Data.DTO;
 using Newtonsoft.Json;
@@ -109,12 +110,15 @@ namespace AutoBuyer.Core.API
             return players;
         }
 
-        public void InsertSessionData(SessionInfo sessionInfo, string token)
+        public void UpdateSession(SessionInfo sessionInfo, string token)
         {
         }
 
-        public bool TryLockPlayerForSearch(AutoBuyer.Data.DTO.Player player)
+        public bool TryLockPlayerForSearch(SessionInfo sessionInfo, string token)
         {
+            CurrentSession.PlayerVersionId = sessionInfo.PlayerVersionId;
+            CurrentSession.Token = token;
+
             return false;
         }
     }
