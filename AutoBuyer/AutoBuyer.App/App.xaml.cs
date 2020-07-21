@@ -13,11 +13,10 @@ namespace AutoBuyer.App
     {
         private void App_OnExit(object sender, ExitEventArgs e)
         {
-            var sessionInfo = new SessionInfo
+            var sessionInfo = new SessionDTO
             {
-                PlayerVersionId = CurrentSession.PlayerVersionId,
-                EndSession = true,
-                EndDate = DateTime.Now
+                SessionId = CurrentSession.SessionId,
+                PlayerVersionId = CurrentSession.PlayerVersionId
             };
 
             new ApiProvider().UpdateSession(sessionInfo, CurrentSession.Token);

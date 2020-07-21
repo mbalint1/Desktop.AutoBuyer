@@ -82,7 +82,7 @@
     <Compile Include="Interfaces\ISearchObject.cs" />
     <Compile Include="Models\Consumable.cs" />
     <Compile Include="Models\Player.cs" />
-    <Compile Include="Models\SessionInfo.cs" />
+    <Compile Include="Models\SessionDTO.cs" />
     <Compile Include="Models\UserPreferences.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\ImageManipulator.cs" />

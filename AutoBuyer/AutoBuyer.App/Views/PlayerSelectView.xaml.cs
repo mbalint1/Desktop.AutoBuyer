@@ -162,11 +162,9 @@ namespace AutoBuyer.App.Views
             //TODO: This will need modified once we add multiple versions of a player
             var playerVersionId = SelectedPlayer.Versions.First().VersionId;
 
-            var sessionInfo = new SessionInfo
+            var sessionInfo = new SessionDTO
             {
-                PlayerVersionId = playerVersionId,
-                StartDate = DateTime.Now,
-                EndSession = false
+                PlayerVersionId = playerVersionId
             };
 
             var canGetPlayer = Api.TryLockPlayerForSearch(sessionInfo, AccessToken);

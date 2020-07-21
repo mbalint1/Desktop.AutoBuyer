@@ -249,11 +249,10 @@ namespace AutoBuyer.Core.Controllers
 
             new MessageController().SendEmail("Run Complete", "We done here, yo");
 
-            var sessionData = new SessionInfo
+            var sessionData = new SessionDTO
             {
-                PlayerVersionId = ((Player)SearchObject).PlayerVersionId,
-                EndDate = DateTime.Now,
-                EndSession = true
+                SessionId = CurrentSession.SessionId,
+                PlayerVersionId = ((Player)SearchObject).PlayerVersionId
             };
 
             new ApiProvider().UpdateSession(sessionData, AccessToken);

@@ -110,16 +110,58 @@ namespace AutoBuyer.Core.API
             return players;
         }
 
-        public void UpdateSession(SessionInfo sessionInfo, string token)
+        public void UpdateSession(SessionDTO sessionData, string token)
         {
+            var request = new RestRequest("/api/sessions/", Method.PUT);
+            var json = JsonConvert.SerializeObject(sessionData);
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
+            request.RequestFormat = DataFormat.Json;
+
+            try
+            {
+                ApiClient.Execute(request);
+            }
+            catch (Exception ex)
+            {
+                //TODO: log? throw?
+            }
         }
 
-        public bool TryLockPlayerForSearch(SessionInfo sessionInfo, string token)
+        public bool TryLockPlayerForSearch(SessionDTO sessionData, string token)
         {
-            CurrentSession.PlayerVersionId = sessionInfo.PlayerVersionId;
+            bool gotPlayer = false;
+
+            CurrentSession.PlayerVersionId = sessionData.PlayerVersionId;
             CurrentSession.Token = token;
 
-            return false;
+            var request = new RestRequest("/api/sessions/", Method.POST);
+            var json = JsonConvert.SerializeObject(sessionData);
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
+            request.RequestFormat = DataFormat.Json;
+
+            try
+            {
+                var response = ApiClient.Execute(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var authResponse = JsonConvert.DeserializeObject<SessionDTO>(response.Content);
+
+                    if (int.TryParse(authResponse.SessionId, out var result))
+                    {
+                        CurrentSession.SessionId = authResponse.SessionId;
+                        gotPlayer = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO: log? throw?
+            }
+
+            return gotPlayer;
         }
     }
 }
