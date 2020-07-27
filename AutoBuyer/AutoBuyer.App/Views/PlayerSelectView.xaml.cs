@@ -159,19 +159,25 @@ namespace AutoBuyer.App.Views
 
         private void BtnStart_OnClick(object sender, RoutedEventArgs e)
         {
+            CurrentSession.Reset();
+
             //TODO: This will need modified once we add multiple versions of a player
             var playerVersionId = SelectedPlayer.Versions.First().VersionId;
+            var numberToBuy = Convert.ToInt32(cboMaxPlayers.SelectedItem);
 
-            var sessionInfo = new SessionDTO
+            CurrentSession.Current = new SessionDTO
             {
-                PlayerVersionId = playerVersionId
+                AccessToken = AccessToken,
+                PlayerVersionId = playerVersionId,
+                SearchNum = numberToBuy,
+                PurchasedNum = 0,
+                Captcha = false
             };
 
-            var canGetPlayer = Api.TryLockPlayerForSearch(sessionInfo, AccessToken);
+            var canGetPlayer = Api.TryLockPlayerForSearch();
 
             if (canGetPlayer)
             {
-                var numberToBuy = Convert.ToInt32(cboMaxPlayers.SelectedItem);
                 var price = cboMaxPrice.SelectedItem.ToString();
 
                 int.TryParse(cboMinSell.SelectedValue?.ToString(), out var minPrice);
@@ -190,7 +196,7 @@ namespace AutoBuyer.App.Views
 
                 Logger.Log(LogType.Info, $"Program started. Searching for {numberToBuy} cards for Player: {SelectedPlayer.Name} at {price} price");
 
-                IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger, AccessToken, AutoRecover);
+                IPuppetMaster puppetMaster = new PuppetMaster(screenController, playerObject, Logger, AutoRecover);
                 puppetMaster.NavigateToTransferSearch();
                 puppetMaster.SetSearchParameters();
 
@@ -198,6 +204,10 @@ namespace AutoBuyer.App.Views
                 Thread.Sleep(7000);
 
                 Task.Factory.StartNew(() => PuppetMaster_Go(puppetMaster));
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Player is currently in use by another user");
             }
         }
 
