@@ -1,8 +1,5 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using AutoBuyer.Core.API;
-using AutoBuyer.Core.Data;
-using AutoBuyer.Core.Models;
 
 namespace AutoBuyer.App
 {
@@ -13,13 +10,7 @@ namespace AutoBuyer.App
     {
         private void App_OnExit(object sender, ExitEventArgs e)
         {
-            var sessionInfo = new SessionDTO
-            {
-                SessionId = CurrentSession.SessionId,
-                PlayerVersionId = CurrentSession.PlayerVersionId
-            };
-
-            new ApiProvider().UpdateSession(sessionInfo, CurrentSession.Token);
+            new ApiProvider().EndSession();
         }
     }
 }

@@ -88,7 +88,8 @@ Enter the Max BIN price you wish to pay (pick an item that is >= 500 coins as th
                     SellMax = maxPrice
                 };
 
-                IPuppetMaster puppetMaster = new PuppetMaster(screenController, consumable, Logger, AccessToken);
+                //TODO: This is broken and needs reworked.
+                IPuppetMaster puppetMaster = new PuppetMaster(screenController, consumable, Logger);
                 Task.Factory.StartNew(() => PuppetMaster_Go(puppetMaster));
             }
 

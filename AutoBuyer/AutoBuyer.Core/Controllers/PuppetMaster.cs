@@ -29,8 +29,6 @@ namespace AutoBuyer.Core.Controllers
 
         private ISearchObject SearchObject { get; }
 
-        private int NumberPurchased { get; set; }
-
         private int MinPrice { get; set; }
 
         private Timer SearchLoadingTimer { get; set; }
@@ -42,8 +40,6 @@ namespace AutoBuyer.Core.Controllers
         public bool ProcessingInterrupted { get; set; }
 
         public InterruptScreen CurrentInterrupt { get; set; }
-
-        public string AccessToken { get; }
 
         private int PurchaseLoopIterations { get; }
 
@@ -57,14 +53,13 @@ namespace AutoBuyer.Core.Controllers
 
         #region Constructors
 
-        public PuppetMaster(IScreenController screenController, ISearchObject searchObject, ILogger logger, string token, bool autoRecover = false)
+        public PuppetMaster(IScreenController screenController, ISearchObject searchObject, ILogger logger, bool autoRecover = false)
         {
             ScreenController = screenController;
             MouseController = new MouseController(searchObject.Mode);
             KeyboardController = new KeyboardController();
             Logger = logger;
             SearchObject = searchObject;
-            NumberPurchased = 0;
             SearchLoadingTimer = new Timer();
             SearchLoadingTimer.Elapsed += SearchTimerOnElapsed;
             SearchLoadingTimer.Interval = Convert.ToInt32(ConfigurationManager.AppSettings["SearchingMarketWaitTime"]);
@@ -73,7 +68,6 @@ namespace AutoBuyer.Core.Controllers
             CaptchaMonitorTimer.Interval = Convert.ToInt32(ConfigurationManager.AppSettings["CaptchaMonitorWaitTime"]);
             ProcessingInterrupted = false;
             CurrentInterrupt = InterruptScreen.None;
-            AccessToken = token;
             PurchaseLoopIterations = Convert.ToInt32(ConfigurationManager.AppSettings["purchaseLoopIterations"]);
             MsBetweenPurchaseClicks = Convert.ToInt32(ConfigurationManager.AppSettings["purchaseLoopMsBetweenClicks"]);
 
@@ -130,7 +124,7 @@ namespace AutoBuyer.Core.Controllers
             var player = (Player)SearchObject;
 
             CaptchaMonitorTimer.Start();
-            while (MinPrice >= 200 && MinPrice <= 450 && NumberPurchased < player.NumberToPurchase)
+            while (MinPrice >= 200 && MinPrice <= 600 && CurrentSession.Current.PurchasedNum < CurrentSession.Current.SearchNum)
             {
                 if (ProcessingInterrupted)
                 {
@@ -145,7 +139,10 @@ namespace AutoBuyer.Core.Controllers
                             Thread.Sleep(20000);
                             new MessageController().SendEmail("Processing Interrupted", "Autobuyer needs your attention. There may be a captcha to solve.");
                         }
-                        
+
+                        CurrentSession.Current.Captcha = true;
+                        new ApiProvider().EndSession();
+
                         return;
                     }
                 }
@@ -209,7 +206,7 @@ namespace AutoBuyer.Core.Controllers
                             MouseController.PerformButtonClick(ButtonTypes.SendToTransferList);
                         }
 
-                        NumberPurchased++;
+                        CurrentSession.Current.PurchasedNum++;
 
                         var transaction = new TransactionLog
                         {
@@ -220,7 +217,7 @@ namespace AutoBuyer.Core.Controllers
                             SellPrice = player.SellMax > 0 ? (int?) player.SellMax : null
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, AccessToken));
+                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
 
                         Thread.Sleep(4000);
                     }
@@ -236,7 +233,7 @@ namespace AutoBuyer.Core.Controllers
                             SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, AccessToken));
+                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
 
                         Thread.Sleep(500);
                     }
@@ -249,97 +246,93 @@ namespace AutoBuyer.Core.Controllers
 
             new MessageController().SendEmail("Run Complete", "We done here, yo");
 
-            var sessionData = new SessionDTO
-            {
-                SessionId = CurrentSession.SessionId,
-                PlayerVersionId = ((Player)SearchObject).PlayerVersionId
-            };
-
-            new ApiProvider().UpdateSession(sessionData, AccessToken);
+            new ApiProvider().EndSession();
         }
 
         public void BuyConsumables()
         {
-            Thread.Sleep(8000);
-            var decreasing = false;
-            var consumable = (Consumable)SearchObject;
+            //TODO: Broken, revisit later
 
-            CaptchaMonitorTimer.Start();
+            //Thread.Sleep(8000);
+            //var decreasing = false;
+            //var consumable = (Consumable)SearchObject;
 
-            MouseController.PerformButtonClick(ButtonTypes.IncreaseMinConsumable);
-            while (NumberPurchased < consumable.NumberToPurchase)
-            {
-                if (ProcessingInterrupted)
-                {
-                    //TODO: Figure out how we are handling this. Email, mobile app notification, click OK, sign back in, solve captcha, etc.
-                    return;
-                }
+            //CaptchaMonitorTimer.Start();
 
-                var succesfulSearch = false;
-                Thread.Sleep(1200);
+            //MouseController.PerformButtonClick(ButtonTypes.IncreaseMinConsumable);
+            //while (NumberPurchased < consumable.NumberToPurchase)
+            //{
+            //    if (ProcessingInterrupted)
+            //    {
+            //        //TODO: Figure out how we are handling this. Email, mobile app notification, click OK, sign back in, solve captcha, etc.
+            //        return;
+            //    }
 
-                if (!decreasing)
-                {
-                    MouseController.PerformButtonClick(ButtonTypes.IncreaseMinConsumable);
-                    decreasing = true;
-                }
-                else
-                {
-                    MouseController.PerformButtonClick(ButtonTypes.DecreaseMinConsumable);
-                    decreasing = false;
-                }
+            //    var succesfulSearch = false;
+            //    Thread.Sleep(1200);
 
-                Thread.Sleep(1200);
-                MouseController.PerformButtonClick(ButtonTypes.Search);
+            //    if (!decreasing)
+            //    {
+            //        MouseController.PerformButtonClick(ButtonTypes.IncreaseMinConsumable);
+            //        decreasing = true;
+            //    }
+            //    else
+            //    {
+            //        MouseController.PerformButtonClick(ButtonTypes.DecreaseMinConsumable);
+            //        decreasing = false;
+            //    }
 
-                SearchLoadingTimer.Start();
-                while (!KillSearchLoadingLoop)
-                {
-                    if (ScreenController.SuccessfulSearch())
-                    {
-                        succesfulSearch = true;
-                        break;
-                    }
-                }
-                SearchLoadingTimer.Stop();
-                KillSearchLoadingLoop = false;
+            //    Thread.Sleep(1200);
+            //    MouseController.PerformButtonClick(ButtonTypes.Search);
 
-                if (succesfulSearch)
-                {
-                    DoPurchaseClicking(PurchaseLoopIterations, MsBetweenPurchaseClicks);
+            //    SearchLoadingTimer.Start();
+            //    while (!KillSearchLoadingLoop)
+            //    {
+            //        if (ScreenController.SuccessfulSearch())
+            //        {
+            //            succesfulSearch = true;
+            //            break;
+            //        }
+            //    }
+            //    SearchLoadingTimer.Stop();
+            //    KillSearchLoadingLoop = false;
 
-                    Thread.Sleep(5000); // Finalizing purchase
+            //    if (succesfulSearch)
+            //    {
+            //        DoPurchaseClicking(PurchaseLoopIterations, MsBetweenPurchaseClicks);
 
-                    if (ScreenController.SuccessfulPurchase())
-                    {
-                        Thread.Sleep(2000);
+            //        Thread.Sleep(5000); // Finalizing purchase
 
-                        if (consumable.AutoSell)
-                        {
-                            ListOnTransferMarket(consumable.SellMin, consumable.SellMax);
-                        }
-                        else
-                        {
-                            MouseController.PerformButtonClick(ButtonTypes.SendToTransferList);
-                        }
+            //        if (ScreenController.SuccessfulPurchase())
+            //        {
+            //            Thread.Sleep(2000);
 
-                        NumberPurchased++;
-                        System.Threading.Tasks.Task.Run(() => Logger.Log(LogType.Info, $"Consumable purchased successfully!"));
-                        Thread.Sleep(4000);
-                    }
-                    else
-                    {
-                        MouseController.PerformButtonClick(ButtonTypes.OutbidMessageBox);
-                        System.Threading.Tasks.Task.Run(() => Logger.Log(LogType.Info, $"Consumable failed to purchase."));
-                        Thread.Sleep(500);
-                    }
-                }
+            //            if (consumable.AutoSell)
+            //            {
+            //                ListOnTransferMarket(consumable.SellMin, consumable.SellMax);
+            //            }
+            //            else
+            //            {
+            //                MouseController.PerformButtonClick(ButtonTypes.SendToTransferList);
+            //            }
 
-                MouseController.PerformButtonClick(ButtonTypes.BackButton);
-            }
-            CaptchaMonitorTimer.Stop();
+            //            NumberPurchased++;
+            //            System.Threading.Tasks.Task.Run(() => Logger.Log(LogType.Info, $"Consumable purchased successfully!"));
+            //            Thread.Sleep(4000);
+            //        }
+            //        else
+            //        {
+            //            MouseController.PerformButtonClick(ButtonTypes.OutbidMessageBox);
+            //            System.Threading.Tasks.Task.Run(() => Logger.Log(LogType.Info, $"Consumable failed to purchase."));
+            //            Thread.Sleep(500);
+            //        }
+            //    }
 
-            new MessageController().SendEmail("Run Complete", "We done here, yo");
+            //    MouseController.PerformButtonClick(ButtonTypes.BackButton);
+            //}
+            //CaptchaMonitorTimer.Stop();
+
+            //new MessageController().SendEmail("Run Complete", "We done here, yo");
         }
 
         #endregion Public Methods

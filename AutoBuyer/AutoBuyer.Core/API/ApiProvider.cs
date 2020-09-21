@@ -110,12 +110,12 @@ namespace AutoBuyer.Core.API
             return players;
         }
 
-        public void UpdateSession(SessionDTO sessionData, string token)
+        public void EndSession()
         {
             var request = new RestRequest("/api/sessions/", Method.PUT);
-            var json = JsonConvert.SerializeObject(sessionData);
+            var json = JsonConvert.SerializeObject(CurrentSession.Current);
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
-            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
+            request.AddParameter("Authorization", "Bearer " + CurrentSession.Current.AccessToken, ParameterType.HttpHeader);
             request.RequestFormat = DataFormat.Json;
 
             try
@@ -128,17 +128,14 @@ namespace AutoBuyer.Core.API
             }
         }
 
-        public bool TryLockPlayerForSearch(SessionDTO sessionData, string token)
+        public bool TryLockPlayerForSearch()
         {
             bool gotPlayer = false;
 
-            CurrentSession.PlayerVersionId = sessionData.PlayerVersionId;
-            CurrentSession.Token = token;
-
             var request = new RestRequest("/api/sessions/", Method.POST);
-            var json = JsonConvert.SerializeObject(sessionData);
+            var json = JsonConvert.SerializeObject(CurrentSession.Current);
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
-            request.AddParameter("Authorization", "Bearer " + token, ParameterType.HttpHeader);
+            request.AddParameter("Authorization", "Bearer " + CurrentSession.Current.AccessToken, ParameterType.HttpHeader);
             request.RequestFormat = DataFormat.Json;
 
             try
@@ -151,7 +148,7 @@ namespace AutoBuyer.Core.API
 
                     if (int.TryParse(authResponse.SessionId, out var result))
                     {
-                        CurrentSession.SessionId = authResponse.SessionId;
+                        CurrentSession.Current.SessionId = authResponse.SessionId;
                         gotPlayer = true;
                     }
                 }
