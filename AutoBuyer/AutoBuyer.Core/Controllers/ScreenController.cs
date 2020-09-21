@@ -18,8 +18,6 @@ namespace AutoBuyer.Core.Controllers
     {
         #region Properties
 
-        private string TrainingSetBaseFilePath => System.Configuration.ConfigurationManager.AppSettings["TrainingSetRoot"];
-
         private Process _browser;
 
         private Bitmap LoginTrainer { get; }
@@ -73,16 +71,16 @@ namespace AutoBuyer.Core.Controllers
         {
             try
             {
-                LoginTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}Login.png"));
-                HomeTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}Home.png"));
-                TransferHomeTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}TransfersHome.png"));
-                TransferSearchTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}TransferSearch.png"));
-                ResultWithPlayerTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}TransferResultsSuccess.png"));
-                SuccessfulPurchaseTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}SuccessfulPurchase.png"));
-                FailedPurchaseTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}FailedPurchase.png"));
-                CaptchaMessageTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}CaptchaMessage.png"));
-                ServiceUnavailableTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}ServiceUnavailable.png"));
-                EaLoginTrainer = new Bitmap(Image.FromFile($@"{TrainingSetBaseFilePath}EaLogIn.png"));
+                LoginTrainer = new Bitmap(Image.FromFile(@"resources/Login.png"));
+                HomeTrainer = new Bitmap(Image.FromFile(@"resources/Home.png"));
+                TransferHomeTrainer = new Bitmap(Image.FromFile(@"resources/TransfersHome.png"));
+                TransferSearchTrainer = new Bitmap(Image.FromFile(@"resources/TransferSearch.png"));
+                ResultWithPlayerTrainer = new Bitmap(Image.FromFile(@"resources/TransferResultsSuccess.png"));
+                SuccessfulPurchaseTrainer = new Bitmap(Image.FromFile(@"resources/SuccessfulPurchase.png"));
+                FailedPurchaseTrainer = new Bitmap(Image.FromFile(@"resources/FailedPurchase.png"));
+                CaptchaMessageTrainer = new Bitmap(Image.FromFile(@"resources/CaptchaMessage.png"));
+                ServiceUnavailableTrainer = new Bitmap(Image.FromFile(@"resources/ServiceUnavailable.png"));
+                EaLoginTrainer = new Bitmap(Image.FromFile(@"resources/EaLogIn.png"));
             }
             catch (Exception ex)
             {
