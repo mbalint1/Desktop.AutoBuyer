@@ -174,6 +174,7 @@ namespace AutoBuyer.Core.API
             var json = JsonConvert.SerializeObject(messageBody);
 
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+            request.AddParameter("Authorization", "Bearer " + CurrentSession.Current.AccessToken, ParameterType.HttpHeader);
             request.RequestFormat = DataFormat.Json;
 
             try
