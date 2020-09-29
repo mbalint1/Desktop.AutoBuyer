@@ -60,8 +60,8 @@
     <Compile Include="API\ApiProvider.cs" />
     <Compile Include="API\AuthRequest.cs" />
     <Compile Include="API\AuthResponse.cs" />
+    <Compile Include="API\Message.cs" />
     <Compile Include="Controllers\KeyboardController.cs" />
-    <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\MouseController.cs" />
     <Compile Include="Controllers\PuppetMaster.cs" />
     <Compile Include="Controllers\ScreenController.cs" />

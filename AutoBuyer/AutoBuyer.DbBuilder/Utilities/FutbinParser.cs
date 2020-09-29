@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using AutoBuyer.Data.DTO;
 using AutoBuyer.Data.Interfaces;
 
@@ -160,9 +163,29 @@ namespace AutoBuyer.Data.Utilities
             return player;
         }
 
-        private string RemoveDiacritics(string text)
+
+        public static string RemoveDiacritics(string stIn)
         {
-            return System.Text.Encoding.ASCII.GetString(System.Text.Encoding.GetEncoding(1251).GetBytes(text));
+            var stFormD = stIn.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+
+            foreach (var t in stFormD)
+            {
+                var uc = CharUnicodeInfo.GetUnicodeCategory(t);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(t);
+                }
+            }
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
+        }
+
+        public static string RemoveNonASCII(string stIn)
+        {
+            // Equivilent of the first 255 characters in utf-8 ascii characters.
+            var result = Regex.Replace(stIn, @"[^\u0000-\u007F]", " ");
+            return result;
         }
     }
 }

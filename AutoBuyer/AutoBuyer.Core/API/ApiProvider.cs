@@ -160,5 +160,35 @@ namespace AutoBuyer.Core.API
 
             return gotPlayer;
         }
+
+        public void SendMessage(string subject, string message)
+        {
+            var request = new RestRequest("/message", Method.POST);
+
+            var messageBody = new Message
+            {
+                Subject = subject,
+                Body = message
+            };
+
+            var json = JsonConvert.SerializeObject(messageBody);
+
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+            request.RequestFormat = DataFormat.Json;
+
+            try
+            {
+                var response = ApiClient.Execute(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    // return a bool maybe?
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO: log? throw?
+            }
+        }
     }
 }

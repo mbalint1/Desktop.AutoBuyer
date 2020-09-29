@@ -49,6 +49,8 @@ namespace AutoBuyer.Core.Controllers
 
         private bool PauseInterruptChecks { get; set; }
 
+        private ApiProvider API { get; set; }
+
         #endregion Properties and Fields
 
         #region Constructors
@@ -70,8 +72,8 @@ namespace AutoBuyer.Core.Controllers
             CurrentInterrupt = InterruptScreen.None;
             PurchaseLoopIterations = Convert.ToInt32(ConfigurationManager.AppSettings["purchaseLoopIterations"]);
             MsBetweenPurchaseClicks = Convert.ToInt32(ConfigurationManager.AppSettings["purchaseLoopMsBetweenClicks"]);
-
             AutoRecover = autoRecover;
+            API = new ApiProvider();
         }
 
         #endregion Constructors
@@ -116,8 +118,6 @@ namespace AutoBuyer.Core.Controllers
 
         public void BuyPlayers()
         {
-            var dataProvider = new ApiProvider();
-
             MinPrice = 200;
             Thread.Sleep(5000);
             var decreasing = false;
@@ -137,11 +137,11 @@ namespace AutoBuyer.Core.Controllers
                         for (int i = 0; i < nestorWants3Emails; i++)
                         {
                             Thread.Sleep(20000);
-                            new MessageController().SendEmail("Processing Interrupted", "Autobuyer needs your attention. There may be a captcha to solve.");
+                            API.SendMessage("Processing Interrupted", "Autobuyer needs your attention. There may be a captcha to solve.");
                         }
 
                         CurrentSession.Current.Captcha = true;
-                        new ApiProvider().EndSession();
+                        API.EndSession();
 
                         return;
                     }
@@ -217,7 +217,7 @@ namespace AutoBuyer.Core.Controllers
                             SellPrice = player.SellMax > 0 ? (int?) player.SellMax : null
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
+                        System.Threading.Tasks.Task.Run(() => API.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
 
                         Thread.Sleep(4000);
                     }
@@ -233,7 +233,7 @@ namespace AutoBuyer.Core.Controllers
                             SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
                         };
 
-                        System.Threading.Tasks.Task.Run(() => dataProvider.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
+                        System.Threading.Tasks.Task.Run(() => API.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
 
                         Thread.Sleep(500);
                     }
@@ -244,9 +244,9 @@ namespace AutoBuyer.Core.Controllers
 
             CaptchaMonitorTimer.Stop();
 
-            new MessageController().SendEmail("Run Complete", "We done here, yo");
+            API.SendMessage("Run Complete", "We done here, yo");
 
-            new ApiProvider().EndSession();
+            API.EndSession();
         }
 
         public void BuyConsumables()

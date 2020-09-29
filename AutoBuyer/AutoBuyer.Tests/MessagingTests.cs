@@ -21,7 +21,7 @@ namespace AutoBuyer.Tests
         [TestMethod]
         public void SendEmailTest()
         {
-            new MessageController().SendEmail("Testing", "Test message, yo");
+            //new MessageController().SendEmail("Testing", "Test message, yo");
         }
     }
 }
