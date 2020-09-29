@@ -8,11 +8,11 @@ namespace AutoBuyer.Data.Utilities
 {
     public class FutbinParser : IFutParser
     {
-        public const string FutbinPlayerBase = "https://www.futbin.com/20/player/";
-        public const string FutbinGoldBase = "https://www.futbin.com/20/players?version=gold_nr&page=";
-        public const string FutbinRareGoldBase = "https://www.futbin.com/20/players?version=gold_rare&page=";
-        public const int FutbinGoldPageLimit = 41;
-        public const int FutbinGoldRarePageLimit = 27;
+        public const string FutbinPlayerBase = "https://www.futbin.com/21/player/";
+        public const string FutbinGoldBase = "https://www.futbin.com/21/players?version=gold_nr&page=";
+        public const string FutbinRareGoldBase = "https://www.futbin.com/21/players?version=gold_rare&page=";
+        public const int FutbinGoldPageLimit = 37;
+        public const int FutbinGoldRarePageLimit = 25;
 
         private IWebUtility WebUtility { get; }
 
@@ -53,7 +53,7 @@ namespace AutoBuyer.Data.Utilities
         {
             var players = new List<Player>();
 
-            const string cardIdentifier = "<a href=\"/20/player/";
+            const string cardIdentifier = "<a href=\"/21/player/";
 
             var split = rawPageData.Split('\n').ToList();
 

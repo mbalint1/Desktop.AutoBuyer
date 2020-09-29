@@ -115,7 +115,7 @@ namespace AutoBuyer.Core.API
             var request = new RestRequest("/api/sessions/", Method.PUT);
             var json = JsonConvert.SerializeObject(CurrentSession.Current);
             request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
-            request.AddParameter("Authorization", "Bearer " + CurrentSession.Current.AccessToken, ParameterType.HttpHeader);
+            request.AddParameter("Authorization", "Bearer " + CurrentSession.Current?.AccessToken, ParameterType.HttpHeader);
             request.RequestFormat = DataFormat.Json;
 
             try

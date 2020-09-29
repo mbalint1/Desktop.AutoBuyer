@@ -105,7 +105,7 @@ namespace AutoBuyer.App.Views
             //TODO: There must be a better way. Each keystroke we are iterating through the list..
             SelectedPlayer = PlayerList.FirstOrDefault(x => x.Name == txtPlayerToBuy.SelectedItem?.ToString());
 
-            if (PlayerList.Any(x => x.Name == SelectedPlayer.Name))
+            if (PlayerList.Any(x => x.Name == SelectedPlayer?.Name))
             {
                 chkValidPlayer.IsChecked = true;
                 chkValidPlayer.Visibility = Visibility.Visible;

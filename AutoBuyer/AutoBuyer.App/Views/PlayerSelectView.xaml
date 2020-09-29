@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="PlayerSelectView">
     <Window.Background>
-        <ImageBrush ImageSource="../Resources/fiber1.png"></ImageBrush>
+        <ImageBrush ImageSource="../Resources/AppBackground21.jpg"></ImageBrush>
     </Window.Background>
     <Grid>
         <Grid VerticalAlignment="Top">
@@ -21,34 +21,34 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Name="lblTitle" HorizontalAlignment="Center" FontFamily="Impact" FontSize="60" FontStyle="Italic" FontWeight="Normal" Foreground="Yellow" Text="FIFA Auto Buyer"></TextBlock>
-            <TextBlock Grid.Row="1" Grid.Column="0" Name="lblPlayerSearch" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow" Text="Search Player to Buy"></TextBlock>
+            <TextBlock Grid.Row="0" Name="lblTitle" HorizontalAlignment="Left" FontFamily="Impact" FontSize="60" FontStyle="Italic" FontWeight="Normal" Foreground="White" Text="FIFA Auto Buyer"></TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" Name="lblPlayerSearch" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="White" Text="Search Player to Buy"></TextBlock>
             <toolkit:AutoCompleteBox Grid.Row="2" Grid.Column="0" Name="txtPlayerToBuy" HorizontalAlignment="Left" Margin="5,0,0,0"  Height="25" Width="200" ItemFilter="Filter" SelectionChanged="TxtPlayerToBuy_OnSelectionChanged" />
-            <CheckBox Grid.Row="2" Grid.Column="1" Name="chkValidPlayer" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="ChkValidPlayer_OnChecked"/>
-            <TextBlock Grid.Row="3" Grid.Column="0" Name="lblMaxPrice" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow" Text="Select Maximum Price"></TextBlock>
+            <CheckBox Grid.Row="2" Grid.Column="1" Name="chkValidPlayer" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="ChkValidPlayer_OnChecked" Foreground="Purple"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Name="lblMaxPrice" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="White" Text="Select Maximum Price"></TextBlock>
             <ComboBox Grid.Row="4" Grid.Column="0" Name="cboMaxPrice" HorizontalAlignment="Left" Margin="5,0,0,0" Height="25" Width="100" SelectionChanged="CboMaxPrice_OnSelectionChanged"></ComboBox>
             <CheckBox Grid.Row="4" Grid.Column="1" Name="chkValidPrice" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="ChkValidPrice_OnChecked"/>
-            <TextBlock Grid.Row="5" Grid.Column="0" Name="lblMaxPlayers" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="Yellow"></TextBlock>
+            <TextBlock Grid.Row="5" Grid.Column="0" Name="lblMaxPlayers" Margin="5,0,0,0" HorizontalAlignment="Left" FontSize="16" Foreground="White"></TextBlock>
             <ComboBox Grid.Row="6" Grid.Column="0" Name="cboMaxPlayers" HorizontalAlignment="Left" Margin="5,0,0,0" Height="25" Width="100" SelectionChanged="CboMaxPlayers_OnSelectionChanged"></ComboBox>
             <CheckBox Grid.Row="6" Grid.Column="1" Name="chkValidMaxPlayers" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="False" Checked="chkValidMaxPlayers_Checked"/>
 
-            <TextBlock Grid.Row="7" Name="lblAutoResell" Foreground="Yellow" FontSize="16" Text="Auto Resell Mode" />
+            <TextBlock Grid.Row="7" Name="lblAutoResell" Foreground="White" FontSize="16" Text="Auto Resell Mode" />
             <CheckBox Grid.Row="7" Margin="130,5,0,0" Name="chkAutoSell" Checked="ChkAutoSell_OnChecked" Unchecked="ChkAutoSell_OnUnchecked"></CheckBox>
-            <TextBlock Grid.Row="7" Name="lblMinSell" Margin="180,0,0,0" Foreground="Yellow" FontSize="16" Text="Min Sell Price" />
+            <TextBlock Grid.Row="7" Name="lblMinSell" Margin="180,0,0,0" Foreground="White" FontSize="16" Text="Min Sell Price" />
             <ComboBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="285,0,0,0" Height="25" Width="100" Name="cboMinSell" Visibility="Visible" SelectionChanged="CboMinSell_OnSelectionChanged"></ComboBox>
-            <TextBlock Grid.Row="7" Name="lblMaxSell" Margin="400,0,0,0" Foreground="Yellow" FontSize="16" Text="Max Sell Price" />
+            <TextBlock Grid.Row="7" Name="lblMaxSell" Margin="400,0,0,0" Foreground="White" FontSize="16" Text="Max Sell Price" />
             <ComboBox Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="510,0,0,0" Height="25" Width="100" Name="cboMaxSell" Visibility="Visible" SelectionChanged="CboMaxSell_OnSelectionChanged"></ComboBox>
 
-            <TextBlock Grid.Row="8" Grid.Column="0" Name="lblAutoRecover" Foreground="Yellow" FontSize="16" Text="Auto Recover" />
+            <TextBlock Grid.Row="8" Grid.Column="0" Name="lblAutoRecover" Foreground="White" FontSize="16" Text="Auto Recover" />
             <CheckBox Grid.Row="8" Grid.Column="0" Margin="130,5,0,0" Name="chkAutoRecover" Checked="ChkAutoRecover_OnChecked" Unchecked="ChkAutoRecover_OnUnchecked"/>
 
-            <Button Grid.Row="9" Grid.Column="0" Name="btnStart" HorizontalAlignment="Left" Margin="5,0,0,0" Height="30" Width="150" Content="Start Auto Buyer!" Click="BtnStart_OnClick" Background="DarkSlateGray" Foreground="Yellow"></Button>
+            <Button Grid.Row="9" Grid.Column="0" Name="btnStart" HorizontalAlignment="Left" Margin="0,0,0,0" Height="30" Width="150" Content="Start Auto Buyer!" Click="BtnStart_OnClick" Background="BlueViolet" Foreground="White" FontWeight="DemiBold"></Button>
         </Grid>
         <Grid>
             <ListBox Name="lstPurchasedPlayers" VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="LightGray"></ListBox>

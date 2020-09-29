@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoBuyer.Core.API;
 using AutoBuyer.Data;
 using AutoBuyer.Data.DTO;
+using AutoBuyer.Data.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AutoBuyer.Tests
@@ -25,6 +27,24 @@ namespace AutoBuyer.Tests
             };
 
             new ApiProvider().InsertTransactionLog(transaction, tempToken);
+        }
+
+        [TestMethod]
+        public void BuildFutDatabase()
+        {
+            try
+            {
+                var futProvider = new FutProvider(FutSource.Futbin);
+
+                var players = futProvider.GetFutPlayers().ToList();
+
+                var dataProvider = new DataProvider();
+
+                dataProvider.SavePlayers(players);
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 }

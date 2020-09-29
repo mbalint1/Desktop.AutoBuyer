@@ -89,9 +89,12 @@ namespace AutoBuyer.App.Views
                 }
                 else
                 {
-                    var consumableView = new ConsumableSelectView(Logger, token);
-                    Close();
-                    consumableView.Show();
+                    MessageBox.Show("This mode is currently under construction!", "Sorry");
+                    btnLogin.IsEnabled = true;
+
+                    //var consumableView = new ConsumableSelectView(Logger, token);
+                    //Close();
+                    //consumableView.Show();
                 }
             }
             else
