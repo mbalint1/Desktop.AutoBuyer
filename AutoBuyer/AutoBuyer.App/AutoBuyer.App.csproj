@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>robot.ico</ApplicationIcon>
+    <ApplicationIcon>ablogo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
@@ -206,6 +206,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="robot.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ablogo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
