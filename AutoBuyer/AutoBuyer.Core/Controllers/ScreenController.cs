@@ -278,7 +278,7 @@ namespace AutoBuyer.Core.Controllers
 
             results.Dispose();
 
-            return percentMatch >= 90;
+            return percentMatch >= 92;
         }
 
         public bool SuccessfulPurchase()
