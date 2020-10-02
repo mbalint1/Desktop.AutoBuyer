@@ -124,7 +124,7 @@ namespace AutoBuyer.Core.Controllers
             var player = (Player)SearchObject;
 
             CaptchaMonitorTimer.Start();
-            while (MinPrice >= 200 && MinPrice <= 600 && CurrentSession.Current.PurchasedNum < CurrentSession.Current.SearchNum)
+            while (MinPrice >= 200 && MinPrice <= 650 && CurrentSession.Current.PurchasedNum < CurrentSession.Current.SearchNum)
             {
                 if (ProcessingInterrupted)
                 {
@@ -150,12 +150,12 @@ namespace AutoBuyer.Core.Controllers
                 var succesfulSearch = false;
                 Thread.Sleep(1200);
 
-                if (!decreasing && MinPrice < 450)
+                if (!decreasing && MinPrice < 650)
                 {
                     MouseController.PerformButtonClick(ButtonTypes.IncreaseMinPlayer);
                     MinPrice += 50;
                 }
-                if (MinPrice == 450)
+                if (MinPrice == 650)
                 {
                     decreasing = true;
                 }
