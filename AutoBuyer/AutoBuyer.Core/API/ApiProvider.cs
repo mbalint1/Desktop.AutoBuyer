@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Net;
+using System.Net.Mail;
 using AutoBuyer.Core.Data;
 using AutoBuyer.Core.Models;
 using AutoBuyer.Data.DTO;
@@ -163,19 +165,40 @@ namespace AutoBuyer.Core.API
 
         public void SendMessage(string subject, string message)
         {
-            var request = new RestRequest("/message", Method.POST);
+            //TODO: Currently this endpoint does not work because Azure blocks all SMTP traffic by default.
+            //TODO: Commenting out this code because I would like to come back to it if we can find a workaround in Azure. 
+            //var request = new RestRequest("/message", Method.POST);
 
-            var messageBody = new Message
-            {
-                Subject = subject,
-                Body = message
-            };
+            //var messageBody = new Message
+            //{
+            //    Subject = subject,
+            //    Body = message
+            //};
 
-            var json = JsonConvert.SerializeObject(messageBody);
+            //var json = JsonConvert.SerializeObject(messageBody);
 
-            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+            //request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+            //request.AddParameter("Authorization", "Bearer " + CurrentSession.Current.AccessToken, ParameterType.HttpHeader);
+            //request.RequestFormat = DataFormat.Json;
+
+            //try
+            //{
+            //    var response = ApiClient.Execute(request);
+
+            //    if (response.StatusCode == HttpStatusCode.OK)
+            //    {
+            //        // return a bool maybe?
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //TODO: log? throw?
+            //}
+
+            //TODO: We are going to directly send the message from here. This needs to be a temporary fix
+
+            var request = new RestRequest("/message/data", Method.GET);
             request.AddParameter("Authorization", "Bearer " + CurrentSession.Current.AccessToken, ParameterType.HttpHeader);
-            request.RequestFormat = DataFormat.Json;
 
             try
             {
@@ -183,12 +206,30 @@ namespace AutoBuyer.Core.API
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    // return a bool maybe?
+                    var data = response.Content;
+                    var cleaned = data.Replace("\"", "");
+
+                    var stuffs = cleaned.Split(' ');
+
+                    try
+                    {
+                        var client = new SmtpClient("smtp.gmail.com", 587)
+                        {
+                            UseDefaultCredentials = false,
+                            Credentials = new NetworkCredential(stuffs[1], stuffs[0]),
+                            EnableSsl = true
+                        };
+
+                        client.Send(stuffs[1], stuffs[3], subject, message);
+                    }
+                    catch (Exception ex)
+                    {
+                        //TODO: Logging
+                    }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                //TODO: log? throw?
             }
         }
     }
