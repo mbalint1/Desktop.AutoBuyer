@@ -152,12 +152,12 @@ namespace AutoBuyer.Core.Controllers
                 var succesfulSearch = false;
                 Thread.Sleep(1200);
 
-                if (!decreasing && MinPrice < 650)
+                if (!decreasing && MinPrice < maxPrice)
                 {
                     MouseController.PerformButtonClick(ButtonTypes.IncreaseMinPlayer);
                     MinPrice += 50;
                 }
-                if (MinPrice == 650)
+                if (MinPrice == maxPrice)
                 {
                     decreasing = true;
                 }
