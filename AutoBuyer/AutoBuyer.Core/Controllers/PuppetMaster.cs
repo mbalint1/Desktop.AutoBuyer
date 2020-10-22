@@ -123,8 +123,10 @@ namespace AutoBuyer.Core.Controllers
             var decreasing = false;
             var player = (Player)SearchObject;
 
+            var maxPrice = Convert.ToInt32(ConfigurationManager.AppSettings["maxBuyLoop"]);
+
             CaptchaMonitorTimer.Start();
-            while (MinPrice >= 200 && MinPrice <= 650 && CurrentSession.Current.PurchasedNum < CurrentSession.Current.SearchNum)
+            while (MinPrice >= 200 && MinPrice <= maxPrice && CurrentSession.Current.PurchasedNum < CurrentSession.Current.SearchNum)
             {
                 if (ProcessingInterrupted)
                 {
