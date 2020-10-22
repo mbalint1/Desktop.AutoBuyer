@@ -488,7 +488,7 @@ namespace AutoBuyer.Core.Controllers
                     ProcessingInterrupted = true;
                     CurrentInterrupt = doubleCheckInterrupt;
 
-                    //new MessageController().SendEmail($"{CurrentInterrupt.ToString()} Time", $"It's {CurrentInterrupt.ToString()} time, yo");
+                    new ApiProvider().SendMessage($"{CurrentInterrupt.ToString()} Time", $"It's {CurrentInterrupt.ToString()} time, yo");
                 }
             }
         }
