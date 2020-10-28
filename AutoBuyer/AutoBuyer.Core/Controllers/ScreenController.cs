@@ -306,7 +306,7 @@ namespace AutoBuyer.Core.Controllers
 
             messageCapture.Dispose();
 
-            if (captcha > 85)
+            if (captcha > 95)
             {
                 return InterruptScreen.Captcha;
             }
