@@ -125,6 +125,9 @@ namespace AutoBuyer.Core.Controllers
 
             var maxPrice = Convert.ToInt32(ConfigurationManager.AppSettings["maxBuyLoop"]);
 
+            // Gets it to 200
+            MouseController.PerformButtonClick(ButtonTypes.IncreaseMinPlayer);
+
             CaptchaMonitorTimer.Start();
             while (MinPrice >= 200 && MinPrice <= maxPrice && CurrentSession.Current.PurchasedNum < CurrentSession.Current.SearchNum)
             {
