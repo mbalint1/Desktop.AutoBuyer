@@ -116,6 +116,136 @@ namespace AutoBuyer.Core.Controllers
             }
         }
 
+        public void BuyPlayers2()
+        {
+            Thread.Sleep(5000);
+
+            var player = (Player)SearchObject;
+            var maxPrice = Convert.ToInt32(ConfigurationManager.AppSettings["maxBuyLoop"]);
+            var currentMinBid = 0;
+            var currentMinBuy = 0;
+
+            CaptchaMonitorTimer.Start();
+            while (CurrentSession.Current.PurchasedNum < CurrentSession.Current.SearchNum)
+            {
+                if (ProcessingInterrupted)
+                {
+                    var canContinue = TryRecoverFromInterrupt();
+
+                    if (!canContinue)
+                    {
+                        const int nestorWants3Emails = 3;
+
+                        for (int i = 0; i < nestorWants3Emails; i++)
+                        {
+                            Thread.Sleep(20000);
+                            API.SendMessage("Processing Interrupted", "Autobuyer needs your attention. There may be a captcha to solve.");
+                        }
+
+                        CurrentSession.Current.Captcha = true;
+                        API.EndSession();
+
+                        CaptchaMonitorTimer.Dispose();
+                        return;
+                    }
+                }
+
+                var succesfulSearch = false;
+                Thread.Sleep(1200);
+
+                // Call to set min bid and min buy
+
+                for (int i = 0; i < 5; i++) // try to get a fresh filter set a max of 5 times, if it produces the same numbers 5 times, eh...
+                {
+                    var randoFilterPrices = GetFilterPrices(maxPrice);
+
+                    if (randoFilterPrices.Item1 != currentMinBid && randoFilterPrices.Item2 != currentMinBuy)
+                    {
+                        currentMinBid = randoFilterPrices.Item1;
+                        currentMinBuy = randoFilterPrices.Item2;
+                        break;
+                    }
+                }
+
+                // Set Filter Prices
+
+                Thread.Sleep(1200);
+                MouseController.PerformButtonClick(ButtonTypes.Search);
+
+                SearchLoadingTimer.Start();
+                while (!KillSearchLoadingLoop)
+                {
+                    if (ScreenController.SuccessfulSearch())
+                    {
+                        succesfulSearch = true;
+                        break;
+                    }
+                }
+                SearchLoadingTimer.Stop();
+                KillSearchLoadingLoop = false;
+
+                if (succesfulSearch)
+                {
+                    DoPurchaseClicking(PurchaseLoopIterations, MsBetweenPurchaseClicks);
+
+                    Thread.Sleep(1000);
+                    MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase); // For some reason the confirmation box is sticking around
+                    Thread.Sleep(4000); // Finalizing purchase
+
+                    if (ScreenController.SuccessfulPurchase())
+                    {
+                        Thread.Sleep(2000);
+
+                        if (player.AutoSell)
+                        {
+                            ListOnTransferMarket(player.SellMin, player.SellMax);
+                        }
+                        else
+                        {
+                            MouseController.PerformButtonClick(ButtonTypes.SendToTransferList);
+                        }
+
+                        CurrentSession.Current.PurchasedNum++;
+
+                        var transaction = new TransactionLog
+                        {
+                            Type = TransactionType.SuccessfulPurchase,
+                            TransactionDate = DateTime.Now,
+                            PlayerName = player.Name,
+                            SearchPrice = Convert.ToInt32(player.MaxPurchasePrice),
+                            SellPrice = player.SellMax > 0 ? (int?) player.SellMax : null
+                        };
+
+                        System.Threading.Tasks.Task.Run(() => API.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
+
+                        Thread.Sleep(4000);
+                    }
+                    else
+                    {
+                        MouseController.PerformButtonClick(ButtonTypes.OutbidMessageBox);
+
+                        var transaction = new TransactionLog
+                        {
+                            Type = TransactionType.FailedPurchase,
+                            TransactionDate = DateTime.Now,
+                            PlayerName = player.Name,
+                            SearchPrice = Convert.ToInt32(player.MaxPurchasePrice)
+                        };
+
+                        System.Threading.Tasks.Task.Run(() => API.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
+
+                        Thread.Sleep(500);
+                    }
+                }
+
+                MouseController.PerformButtonClick(ButtonTypes.BackButton);
+            }
+
+            CaptchaMonitorTimer.Dispose();
+            API.SendMessage("Run Complete", "We done here, yo");
+            API.EndSession();
+        }
+
         public void BuyPlayers()
         {
             MinPrice = 200;
@@ -148,6 +278,7 @@ namespace AutoBuyer.Core.Controllers
                         CurrentSession.Current.Captcha = true;
                         API.EndSession();
 
+                        CaptchaMonitorTimer.Dispose();
                         return;
                     }
                 }
@@ -219,7 +350,7 @@ namespace AutoBuyer.Core.Controllers
                             TransactionDate = DateTime.Now,
                             PlayerName = player.Name,
                             SearchPrice = Convert.ToInt32(player.MaxPurchasePrice),
-                            SellPrice = player.SellMax > 0 ? (int?) player.SellMax : null
+                            SellPrice = player.SellMax > 0 ? (int?)player.SellMax : null
                         };
 
                         System.Threading.Tasks.Task.Run(() => API.InsertTransactionLog(transaction, CurrentSession.Current.AccessToken));
@@ -247,7 +378,7 @@ namespace AutoBuyer.Core.Controllers
                 MouseController.PerformButtonClick(ButtonTypes.BackButton);
             }
 
-            CaptchaMonitorTimer.Stop();
+            CaptchaMonitorTimer.Dispose();
 
             API.SendMessage("Run Complete", "We done here, yo");
 
@@ -457,6 +588,35 @@ namespace AutoBuyer.Core.Controllers
                 }
             }
             return canContinue;
+        }
+
+        private Tuple<int, int> GetFilterPrices(int maxPrice)
+        {
+            var random = new Random(Guid.NewGuid().GetHashCode());
+
+            var next1 = random.Next(2, maxPrice / 100);
+            var next2 = random.Next(2, maxPrice / 100);
+
+            var halfOrNah = DateTime.Now.Ticks % 2 == 0;
+
+            var first = next1 * 100;
+            var second = next2 * 100;
+
+            if (halfOrNah)
+            {
+                first += 50;
+                second += 50;
+            }
+
+            var minBid = Math.Min(first, second);
+            var minBuy = Math.Max(first, second);
+
+            return new Tuple<int, int>(minBid, minBuy);
+        }
+
+        private void SetFilterPrices()
+        {
+
         }
 
         #endregion Private Methods
