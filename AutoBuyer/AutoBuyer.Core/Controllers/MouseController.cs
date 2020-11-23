@@ -27,10 +27,6 @@ namespace AutoBuyer.Core.Controllers
 
         private Point SearchCoordinates { get; set; }
 
-        private Point IncreaseMinCoordinates { get; set; }
-
-        private Point DecreaseMinCoordinates { get; set; }
-
         private Point BuyCoordinates { get; set; }
 
         private Point ConfirmCoordinates { get; set; }
@@ -51,9 +47,11 @@ namespace AutoBuyer.Core.Controllers
 
         private Point ListItemFinal { get; set; }
 
-        private Point OutbidMessageBoxCoordinates { get; set; }
-
         private Point EaLoginButton { get; set; }
+
+        private Point MinBidText { get; set; }
+
+        private Point MinBuyText { get; set; }
 
         private const int MOUSEEVENTF_LEFTDOWN = 0x02;
 
@@ -112,12 +110,6 @@ namespace AutoBuyer.Core.Controllers
                 case ButtonTypes.MaxPriceTxt:
                     DoClickAtPosition(MaxPriceTextCoordinates.X, MaxPriceTextCoordinates.Y);
                     break;
-                case ButtonTypes.IncreaseMinPlayer:
-                    DoClickAtPosition(IncreaseMinCoordinates.X, IncreaseMinCoordinates.Y);
-                    break;
-                case ButtonTypes.DecreaseMinPlayer:
-                    DoClickAtPosition(DecreaseMinCoordinates.X, DecreaseMinCoordinates.Y);
-                    break;
                 case ButtonTypes.IncreaseMinConsumable:
                     DoClickAtPosition(IncreaseMinConsumables.X, IncreaseMinConsumables.Y);
                     break;
@@ -151,11 +143,14 @@ namespace AutoBuyer.Core.Controllers
                 case ButtonTypes.ListItemFinal:
                     DoClickAtPosition(ListItemFinal.X, ListItemFinal.Y);
                     break;
-                case ButtonTypes.OutbidMessageBox:
-                    DoClickAtPosition(OutbidMessageBoxCoordinates.X, OutbidMessageBoxCoordinates.Y);
-                    break;
                 case ButtonTypes.EaLogIn:
                     DoClickAtPosition(EaLoginButton.X, EaLoginButton.Y);
+                    break;
+                case ButtonTypes.MinBidText:
+                    DoClickAtPosition(MinBidText.X, MinBidText.Y);
+                    break;
+                case ButtonTypes.MinBuyText:
+                    DoClickAtPosition(MinBuyText.X, MinBuyText.Y);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null);
@@ -194,10 +189,6 @@ namespace AutoBuyer.Core.Controllers
             var txtMaxPriceY = Convert.ToInt32(ConfigurationManager.AppSettings["TxtMaxPrice-Y"]);
             var searchX = Convert.ToInt32(ConfigurationManager.AppSettings["Search-X"]);
             var searchY = Convert.ToInt32(ConfigurationManager.AppSettings["Search-Y"]);
-            var increaseX = Convert.ToInt32(ConfigurationManager.AppSettings["Increase-X"]);
-            var increaseY = Convert.ToInt32(ConfigurationManager.AppSettings["Increase-Y"]);
-            var decreaseX = Convert.ToInt32(ConfigurationManager.AppSettings["Decrease-X"]);
-            var decreaseY = Convert.ToInt32(ConfigurationManager.AppSettings["Decrease-Y"]);
             var buyX = Convert.ToInt32(ConfigurationManager.AppSettings["Buy-X"]);
             var buyY = Convert.ToInt32(ConfigurationManager.AppSettings["Buy-Y"]);
             var confirmX = Convert.ToInt32(ConfigurationManager.AppSettings["Confirm-X"]);
@@ -220,6 +211,10 @@ namespace AutoBuyer.Core.Controllers
             var listItemY = Convert.ToInt32(ConfigurationManager.AppSettings["ListItem-Y"]);
             var eaLoginX = Convert.ToInt32(ConfigurationManager.AppSettings["EaLogIn-X"]);
             var eaLoginY = Convert.ToInt32(ConfigurationManager.AppSettings["EaLogIn-Y"]);
+            var minBidX = Convert.ToInt32(ConfigurationManager.AppSettings["MinBidTxt-X"]);
+            var minBidY = Convert.ToInt32(ConfigurationManager.AppSettings["MinBidTxt-Y"]);
+            var minBuyX = Convert.ToInt32(ConfigurationManager.AppSettings["MinBuyTxt-X"]);
+            var minBuyY = Convert.ToInt32(ConfigurationManager.AppSettings["MinBuyTxt-Y"]);
 
             LoginCoordinates = new Point(loginX, loginY);
             TransferNavigateCoordinates = new Point(transfersNavigateX, transfersNavigateY);
@@ -228,8 +223,6 @@ namespace AutoBuyer.Core.Controllers
             PlayerNameTextDropCoordinates = new Point(txtPlayerDropX, txtPlayerDropY);
             MaxPriceTextCoordinates = new Point(txtMaxPriceX, txtMaxPriceY);
             SearchCoordinates = new Point(searchX, searchY);
-            IncreaseMinCoordinates = new Point(increaseX, increaseY);
-            DecreaseMinCoordinates = new Point(decreaseX, decreaseY);
             BuyCoordinates = new Point(buyX, buyY);
             ConfirmCoordinates = new Point(confirmX, confirmY);
             SendToTransferListCoordinates = new Point(sendToTransferX, sendToTransferY);
@@ -241,11 +234,8 @@ namespace AutoBuyer.Core.Controllers
             ListMaxText = new Point(listMaxTxtX, listMaxTxtY);
             ListItemFinal = new Point(listItemX, listItemY);
             EaLoginButton = new Point(eaLoginX, eaLoginY);
-
-            //TODO remove eventually
-            var outbidX = Convert.ToInt32(ConfigurationManager.AppSettings["OutbidMessageBox-X"]);
-            var outbidY = Convert.ToInt32(ConfigurationManager.AppSettings["OutbidMessageBox-Y"]);
-            OutbidMessageBoxCoordinates = new Point(outbidX, outbidY);
+            MinBidText = new Point(minBidX, minBidY);
+            MinBuyText = new Point(minBuyX, minBuyY);
         }
 
         #endregion Private Methods

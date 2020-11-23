@@ -9,14 +9,14 @@ namespace AutoBuyer.Core.Controllers
 {
     public class KeyboardController : IKeyboardController
     {
-        public void SendInput(string input)
+        public void SendInput(string input, int msBetweenInput = 250)
         {
             input = input.ToUpperInvariant();
             foreach (var s in input.ToCharArray())
             {
                 try
                 {
-                    Thread.Sleep(250);
+                    Thread.Sleep(msBetweenInput);
                     Send(KeyMappings[s]);
                 }
                 catch (Exception)

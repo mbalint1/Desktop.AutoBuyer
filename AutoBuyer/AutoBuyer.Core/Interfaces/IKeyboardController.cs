@@ -8,6 +8,6 @@ namespace AutoBuyer.Core.Interfaces
 {
     interface IKeyboardController
     {
-        void SendInput(string input);
+        void SendInput(string input, int msBetweenInput = 250);
     }
 }

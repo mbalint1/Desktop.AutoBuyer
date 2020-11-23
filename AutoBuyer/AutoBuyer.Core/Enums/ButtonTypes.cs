@@ -8,8 +8,6 @@
         PlayerNameTextbox,
         PlayerNameTextDrop,
         MaxPriceTxt,
-        IncreaseMinPlayer,
-        DecreaseMinPlayer,
         IncreaseMinConsumable,
         DecreaseMinConsumable,
         Search,
@@ -21,7 +19,8 @@
         ListMinTxt,
         ListMaxTxt,
         ListItemFinal,
-        OutbidMessageBox,
-        EaLogIn
+        EaLogIn,
+        MinBidText,
+        MinBuyText
     }
 }
