@@ -463,7 +463,7 @@ namespace AutoBuyer.Core.Controllers
             if (halfOrNah)
             {
                 first += 50;
-                second += 50;
+                //second += 50;
             }
 
             var minBid = Math.Min(first, second);
@@ -475,12 +475,12 @@ namespace AutoBuyer.Core.Controllers
         private void SetFilterPrices(int minBid, int minBuy)
         {
             MouseController.PerformButtonClick(ButtonTypes.MinBidText);
-            KeyboardController.SendInput(minBid.ToString(), 100);
+            KeyboardController.SendInput(minBid.ToString(), 120);
 
             Thread.Sleep(200);
 
             MouseController.PerformButtonClick(ButtonTypes.MinBuyText);
-            KeyboardController.SendInput(minBuy.ToString(), 100);
+            KeyboardController.SendInput(minBuy.ToString(), 120);
         }
 
         #endregion Private Methods

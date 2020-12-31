@@ -278,7 +278,7 @@ namespace AutoBuyer.Core.Controllers
 
             results.Dispose();
 
-            return percentMatch >= 90;
+            return percentMatch >= 79; // TODO we need to fix this. Gold > 90, Icon ~89, Blue ~88, Totw ~78, No results ~76
         }
 
         public bool SuccessfulPurchase()
