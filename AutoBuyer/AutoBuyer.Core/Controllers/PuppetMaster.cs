@@ -187,7 +187,7 @@ namespace AutoBuyer.Core.Controllers
                 {
                     DoPurchaseClicking(PurchaseLoopIterations, MsBetweenPurchaseClicks);
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(2000);
                     MouseController.PerformButtonClick(ButtonTypes.ConfirmPurchase); // For some reason the confirmation box is sticking around
                     Thread.Sleep(4000); // Finalizing purchase
 
